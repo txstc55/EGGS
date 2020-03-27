@@ -334,6 +334,7 @@ int main(int argc, char *argv[])
   {
     key_down(' ', 0);
   }
+  igl::writeOBJ("slim.obj", sData.V_o, sData.F);
 
   return 0;
 }
