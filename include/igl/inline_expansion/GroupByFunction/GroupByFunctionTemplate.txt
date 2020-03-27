@@ -1,0 +1,38 @@
+#include <x86intrin.h>
+#include <xmmintrin.h>
+#include <vector>
+#include <tbb/parallel_for.h>
+#include <iterator>
+#include <fstream>
+using namespace std;
+
+
+
+extern "C" void scramble_grouped_{{ function_hash_name }}_single(const vector<size_t>& reordered_data_ids, const vector<size_t>& reordered_result_position, const vector<vector<double>>& M, vector<double>& result_vector){
+    {% for i in range(max_vids)%}__m128d v{{i}};
+    {% endfor %}
+    {% for i in range(length(loop_start)) %}
+    for (size_t i= 0; i<{{ at(loop_length, i) }}; i+=2){
+        {% for j in range(length(at(matrix_ids, i))) %}
+        v{{j}} = {M[{{ at(at(matrix_ids, i), j) }}][reordered_data_ids[i*{{ at(loop_gap, i) }}+{{ at(loop_start, i) }}+{{ j }}]], M[{{ at(at(matrix_ids, i), j) }}][reordered_data_ids[i*{{ at(loop_gap, i) }}+{{ at(loop_start, i)}}+{{ j }}+{{ length(at(matrix_ids, i)) }}]]};{% endfor %}
+        v{{ length(at(matrix_ids, i)) }} = {{ at(function_strings, i) }};
+        result_vector[reordered_result_position[{{ at(result_position_start, i) }}+i]]  = v{{ length(at(matrix_ids, loop.index)) }}[0];
+        result_vector[reordered_result_position[{{ at(result_position_start, i) }}+i+1]] = v{{ length(at(matrix_ids, loop.index)) }}[1];
+    }
+    {% endfor %}
+}
+
+
+
+extern "C" void scramble_grouped_{{ function_hash_name }}_multi(const vector<size_t>& reordered_data_ids, const vector<size_t>& reordered_result_position, const vector<vector<double>>& M, vector<double>& result_vector){
+    {% for i in range(length(loop_start)) %}
+    tbb::parallel_for(size_t(0), size_t({{ at(loop_length, i) }}), size_t(2), [&](size_t i){
+        {% for j in range(length(at(matrix_ids, i))) %}
+        __m128d v{{j}} = {M[{{ at(at(matrix_ids, i), j) }}][reordered_data_ids[i*{{ at(loop_gap, i) }}+{{ at(loop_start, i) }}+{{ j }}]], M[{{ at(at(matrix_ids, i), j) }}][reordered_data_ids[i*{{ at(loop_gap, i) }}+{{ at(loop_start, i)}}+{{ j }}+{{ length(at(matrix_ids, i)) }}]]};{% endfor %}
+        __m128d v{{ length(at(matrix_ids, i)) }} = {{ at(function_strings, i) }};
+        result_vector[reordered_result_position[{{ at(result_position_start, i) }}+i]]  = v{{ length(at(matrix_ids, loop.index)) }}[0];
+        result_vector[reordered_result_position[{{ at(result_position_start, i) }}+i+1]] = v{{ length(at(matrix_ids, loop.index)) }}[1];
+    });
+
+    {% endfor %}
+}
