@@ -5,3 +5,4 @@ external/
 .vs/
 .vscode/
 build/
+result_datas/
