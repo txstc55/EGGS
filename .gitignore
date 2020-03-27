@@ -5,4 +5,5 @@ external/
 .vs/
 .vscode/
 build/
-result_datas/
+result_datas/*.txt
+result_datas/*.obj
