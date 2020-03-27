@@ -4,3 +4,4 @@ external/
 .idea/
 .vs/
 .vscode/
+build/
