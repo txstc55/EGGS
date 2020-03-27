@@ -617,6 +617,7 @@ IGL_INLINE void build_linear_system_numeric_together(igl::SLIMData &s, Eigen::Sp
     s.L_inner.assign(result_numeric.innerIndexPtr(), result_numeric.innerIndexPtr() + result_numeric.nonZeros());
     s.soft_constraints_triplet.resize(0);
     result_numeric.resize(0, 0);
+    ie::NumericType::clear_pool();
   }
   t.start();
   s.datas[0].assign(s.A.valuePtr(), s.A.valuePtr() + s.A.nonZeros());
@@ -701,6 +702,7 @@ IGL_INLINE void build_linear_system_numeric_seperate(igl::SLIMData &s, Eigen::Sp
     s.L_outer.assign(result_numeric.outerIndexPtr(), result_numeric.outerIndexPtr() + result_numeric.rows() + 1);
     s.L_inner.assign(result_numeric.innerIndexPtr(), result_numeric.innerIndexPtr() + result_numeric.nonZeros());
     result_numeric.resize(0, 0);
+    ie::NumericType::clear_pool();
   }
   t.start();
   s.datas[0].assign(s.A.valuePtr(), s.A.valuePtr() + s.A.nonZeros());

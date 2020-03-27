@@ -313,6 +313,7 @@ IGL_INLINE void build_lhs_numeric_multi(OPTICALData &o)
         o.L_inner.resize(result_numeric.nonZeros());
         o.L_outer.assign(result_numeric.outerIndexPtr(), result_numeric.outerIndexPtr() + result_numeric.rows() + 1);
         o.L_inner.assign(result_numeric.innerIndexPtr(), result_numeric.innerIndexPtr() + result_numeric.nonZeros());
+        ie::NumericType::clear_pool();
     }
     t.start();
     o.datas[0].assign(o.Ix.data(), o.Ix.data() + o.width * o.height);

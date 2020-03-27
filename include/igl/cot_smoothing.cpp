@@ -170,6 +170,7 @@ IGL_INLINE void build_linear_system_numeric_together(COTSMOOTHData &c)
         c.L_inner.resize(result_numeric.nonZeros());
         c.L_outer.assign(result_numeric.outerIndexPtr(), result_numeric.outerIndexPtr() + result_numeric.rows() + 1);
         c.L_inner.assign(result_numeric.innerIndexPtr(), result_numeric.innerIndexPtr() + result_numeric.nonZeros());
+        ie::NumericType::clear_pool();
     }
     t.start();
     c.datas[0].assign(c.L.valuePtr(), c.L.valuePtr() + c.L.nonZeros());
@@ -223,6 +224,7 @@ IGL_INLINE void build_linear_system_numeric_seperate(COTSMOOTHData &c)
                 index++;
             }
         }
+        ie::NumericType::clear_pool();
     }
     t.start();
     c.datas[0].assign(c.L.valuePtr(), c.L.valuePtr() + c.L.nonZeros());
