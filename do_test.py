@@ -60,27 +60,21 @@ numeric2_data["ASSEMBLE"] = 0
 if example == 0:
     ## do eigen tests
     os.system("cd build && ./tutorial/709_SLIM_bin -m 0" + demo_type + file +" && cd ..")
-    os.system("mv build/result.txt result_datas/result_eigen.txt")
-
-
-    # ## do cached tests
-    # os.system("cd build && ./tutorial/709_SLIM_bin -m 1" + demo_type + file +" && cd ..")
-    # os.system("mv build/result.txt result_datas/result_cached.txt")
-
+    os.system("mv build/result.txt result_datas/result_eigen.txt && mv build/slim.obj result_datas/slim_eigen.obj")
 
 
     ## do mkl tests
     os.system("cd build && ./tutorial/709_SLIM_bin -m 2" + demo_type + file +" && cd ..")
-    os.system("mv build/result.txt result_datas/result_mkl.txt")
+    os.system("mv build/result.txt result_datas/result_mkl.txt && mv build/slim.obj result_datas/slim_mkl.obj")
 
 
     ## do numeric 1 tests
     os.system("cd build && ./tutorial/709_SLIM_bin -m 3" + demo_type + file +" && cd ..")
-    os.system("mv build/result.txt result_datas/result_numeric1.txt")
+    os.system("mv build/result.txt result_datas/result_numeric1.txt && mv build/slim.obj result_datas/slim_numeric1.obj")
 
     ## do numeric 2 tests
     os.system("cd build && ./tutorial/709_SLIM_bin -m 4" + demo_type + file +" && cd ..")
-    os.system("mv build/result.txt result_datas/result_numeric2.txt")
+    os.system("mv build/result.txt result_datas/result_numeric2.txt && mv build/slim.obj result_datas/slim_numeric2.obj")
 
 
 
