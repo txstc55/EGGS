@@ -76,6 +76,14 @@ int main(int argc, char *argv[])
   {
     mesh_name = TUTORIAL_SHARED_PATH "/armadillo.obj";
   }
+  else
+  {
+    mesh_name = TUTORIAL_SHARED_PATH "/" + mesh_name;
+  }
+
+  std::ofstream result_file;
+  result_file.open("result_cot_matrix.txt");
+
   if (hasEnding(mesh_name, "obj") || hasEnding(mesh_name, "OBJ"))
   {
     igl::readOBJ(mesh_name, V, F);
@@ -89,29 +97,25 @@ int main(int argc, char *argv[])
   }
   t.stop();
   std::cout << "Standard Eigen method took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
-  // std::cout << L.rows() << " " << L.cols() << " " << L.nonZeros() << "\n";
+  result_file << "Eigen method: " << t.getElapsedTimeInMicroSec() / 100 << "\n";
 
   igl::COTMATRIXData cd;
   cd.V = V;
   cd.F = F;
   igl::cotmatrix_numeric_intermediate(cd);
 
-  // Eigen::MatrixXd l2;
-  // igl::squared_edge_lengths(V, F, l2);
-  // for (int i=0; i<l2.cols(); i++){
-  //   for (int j = 0; j<l2.rows(); j++){
-  //     std::cout<<l2(j, i)<<" "<<cd.datas[0][i*l2.rows()+j]<<"\n";
-  //   }
-  // }
-
-
   t.start();
   for (int i = 0; i < 100; i++)
   {
     igl::cotmatrix_numeric_intermediate(cd);
+    for (int i = 0; i < cd.result.size(); i++)
+    {
+      cd.result[i] = 0;
+    }
   }
   t.stop();
   std::cout << "Our method took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
+  result_file << "Our method: " << t.getElapsedTimeInMicroSec() / 100 << "\n";
 
   double err = 0;
   for (int i = 0; i < L.nonZeros(); i++)
@@ -119,5 +123,7 @@ int main(int argc, char *argv[])
     err += std::pow(L.valuePtr()[i] - cd.result[i], 2);
   }
 
-  std::cout<<"Error: "<<err<<"\n";
+  std::cout << "Error: " << err << "\n";
+  result_file << "Error of two methods: " << err << "\n";
+  result_file.close();
 }
