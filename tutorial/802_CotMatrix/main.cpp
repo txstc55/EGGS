@@ -107,10 +107,10 @@ int main(int argc, char *argv[])
   t.start();
   for (int i = 0; i < 100; i++)
   {
-    for (int i = 0; i < cd.result.size(); i++)
-    {
-      cd.result[i] = 0;
-    }
+    // for (int i = 0; i < cd.result.size(); i++)
+    // {
+    //   cd.result[i] = 0;
+    // }
     igl::cotmatrix_numeric_intermediate(cd);
   }
   t.stop();
