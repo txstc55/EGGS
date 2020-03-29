@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
   }
   t.stop();
   std::cout << "Standard Eigen method took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
-  result_file << "Eigen method: " << t.getElapsedTimeInMicroSec() / 100 << "\n";
+  result_file << "Eigen method: " << t.getElapsedTimeInMicroSec() << "\n";
 
   igl::COTMATRIXData cd;
   cd.V = V;
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
   }
   t.stop();
   std::cout << "Our method took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
-  result_file << "Our method: " << t.getElapsedTimeInMicroSec() / 100 << "\n";
+  result_file << "Our method: " << t.getElapsedTimeInMicroSec() << "\n";
 
   double err = 0;
   for (int i = 0; i < L.nonZeros(); i++)
