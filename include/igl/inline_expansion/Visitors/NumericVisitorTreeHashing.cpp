@@ -132,9 +132,9 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
         // then access the right, write the operation id, parent access that
         // check if this {{left_operation_id, left_operation_id}, current_operation} exists
         // if not, create and store. If yes, access the operation id and store
-        (*NumericType::pool).tree_node_pool[n.left_index].accept((*this), data_position, false);
+        (*this).visit((*NumericType::pool).tree_node_pool[n.left_index], data_position, false, store_position, chosen_repeated_node_map);
         size_t left_operation_id = this->data_array_operation_ids[data_position];
-        (*NumericType::pool).tree_node_pool[n.right_index].accept((*this), data_position, false);
+        (*this).visit((*NumericType::pool).tree_node_pool[n.right_index], data_position, false, store_position, chosen_repeated_node_map);
         size_t right_operation_id = this->data_array_operation_ids[data_position];
         // now check if the operation exists
         if (this->operation_to_id_map.find({{left_operation_id, right_operation_id}, n.operation}) != this->operation_to_id_map.end())
@@ -153,7 +153,7 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
     }
     case NumericType::Sqrt:
     {
-        (*NumericType::pool).tree_node_pool[n.left_index].accept((*this), data_position, false);
+        (*this).visit((*NumericType::pool).tree_node_pool[n.left_index], data_position, false, store_position, chosen_repeated_node_map);
         size_t left_operation_id = this->data_array_operation_ids[data_position];
         // now check if the operation exists
         if (this->operation_to_id_map.find({{left_operation_id, 0}, n.operation}) != this->operation_to_id_map.end())
