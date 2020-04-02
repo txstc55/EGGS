@@ -69,7 +69,7 @@ void NumericType::set_pool(NumericPool *p)
 
 void NumericType::accept(NumericVisitor &nv, size_t data_position)
 {
-    nv.visit(*this, data_position);
+    nv.visit(*this, data_position, true, true);
 }
 
 // the operations will avoid using excessive amount of prentices

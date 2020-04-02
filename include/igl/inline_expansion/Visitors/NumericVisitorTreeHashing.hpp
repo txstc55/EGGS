@@ -6,10 +6,12 @@
 #include <mutex>
 #include <vector>
 
-namespace ie {
+namespace ie
+{
 class TreeToFileVisitor;
 class TreeToIndexVisitor;
-class NumericVisitorTreeHashing : public NumericVisitor {
+class NumericVisitorTreeHashing : public NumericVisitor
+{
 private:
     // a bool serves as a lock
     // needs to check with it to see if operation can be written at this moment
@@ -20,10 +22,10 @@ private:
     static std::mutex can_write_const_map;
 
     // an atomic operation to write to operation map
-    size_t write_to_operation_map(const size_t& left_operation_id, const size_t& right_operation_id, const char& current_operation);
+    size_t write_to_operation_map(const size_t &left_operation_id, const size_t &right_operation_id, const char &current_operation);
 
     // an atomic operation to write to constant map
-    size_t write_to_constant_map(const double& const_value);
+    size_t write_to_constant_map(const double &const_value);
 
 public:
     // default constructor
@@ -38,7 +40,6 @@ public:
     std::map<std::pair<std::pair<size_t, size_t>, char>, size_t> operation_to_id_map = {};
     std::vector<std::pair<std::pair<size_t, size_t>, char>> id_to_operation_map = {};
 
-
     // record for each tree in result array, what operation this element is
     std::vector<size_t> data_array_operation_ids;
     // record for each tree in result array, what data_ids this tree uses, note that we don't need
@@ -51,16 +52,15 @@ public:
     std::vector<double> seen_consts = {};
 
     // visit function
-    void visit(NumericType& n, size_t data_position) override;
+    void visit(NumericType &n, size_t data_position, bool top_level, bool store_position) override;
 
     // accept function to generate file
-    void accept(TreeToFileVisitor& visitor);
+    void accept(TreeToFileVisitor &visitor);
 
     // accept function to fill up indices
-    void accept(TreeToIndexVisitor& visitor);
+    void accept(TreeToIndexVisitor &visitor);
 
     // initialize with the length of the valuePtr of the result matrix
     NumericVisitorTreeHashing(unsigned int data_size);
-
 };
-}
+} // namespace ie
