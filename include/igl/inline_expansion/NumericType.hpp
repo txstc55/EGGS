@@ -64,7 +64,7 @@ public:
     size_t right_index;
 
     // accept the visitor
-    void accept(NumericVisitor &nv, size_t data_position);
+    void accept(NumericVisitor &nv, size_t data_position, const bool top_level);
 
     // the operations will all return a NumericType
     // which has the structure of a tree
@@ -98,7 +98,7 @@ public:
     // 2. can conver all of the following repeated nodes
     // it will return true if there are repeated nodes
     // otherwise return false
-    void MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_node_map);
+    void MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_node_map, const bool top_level);
 
 private:
     // make it static
