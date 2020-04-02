@@ -67,10 +67,10 @@ void NumericType::set_pool(NumericPool *p)
     NumericType::pool = p;
 }
 
-void NumericType::accept(NumericVisitor &nv, size_t data_position)
+void NumericType::accept(NumericVisitor &nv, size_t data_position, const bool top_level)
 {
     map<size_t, size_t> chosen_repeated_node_map;
-    (*this).MarkRepeatedNodes(chosen_repeated_node_map);                  // we need to find the repeated node id first
+    (*this).MarkRepeatedNodes(chosen_repeated_node_map, top_level);       // we need to find the repeated node id first
     nv.visit(*this, data_position, true, true, chosen_repeated_node_map); // pass that to the visitor and do whatever they want to do with it
 }
 
@@ -210,8 +210,10 @@ void NumericType::clear_pool()
     NumericType::pool->clear_pool();
 }
 
-void NumericType::MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_node_map)
+void NumericType::MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_node_map, const bool top_level)
 {
+    if (!top_level)
+        return;
     queue<NumericType> candidates;
     vector<size_t> used_node_index;
     candidates.push(*this);
@@ -282,8 +284,10 @@ void NumericType::MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_no
     std::set<size_t> chosen_repeated_node;
     set<size_t> chosen_repeated_node_children; // the choldren of the repeated nodes are repeated, but we do not want to label them
     // we have detected repeated entries, now do the work of finding the top level node that covers all of its children indices
-    for (unsigned int i = repeated_indices.size() - 1; i >= 0; i--)
+    // printf("count %d \n", repeated_indices.size());
+    for (int i = repeated_indices.size() - 1; i >= 0; i--)
     {
+        // printf("at node %d\n", repeated_indices[i]);
         NumericType c = NumericType::pool->tree_node_pool[repeated_indices[i]];
         // we are not children of anyone
         if (chosen_repeated_node_children.find(repeated_indices[i]) == chosen_repeated_node_children.end())
@@ -330,6 +334,8 @@ void NumericType::MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_no
                 chosen_repeated_node_children.insert(c.right_index);
         }
     }
+    if (chosen_repeated_node.size() == 0)
+        return;
 
     // now record from a bfs perspective, what order do we see those chosen nodes
     queue<NumericType> nodes;
@@ -383,6 +389,7 @@ void NumericType::MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_no
             break;
         }
     }
+    // printf("Number of chosen repeated nodes: %d\n", chosen_repeated_node_map.size());
 }
 
 } // namespace ie

@@ -171,6 +171,9 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
         break;
     }
     }
+    // if (top_level){
+    //     printf("Top level, operation id is %d, number of repeated entries are %d\n", this->data_array_operation_ids[data_position], chosen_repeated_node_map.size());
+    // }
 }
 
 void NumericVisitorTreeHashing::accept(TreeToFileVisitor &visitor)
