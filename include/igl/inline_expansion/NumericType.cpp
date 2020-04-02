@@ -69,7 +69,9 @@ void NumericType::set_pool(NumericPool *p)
 
 void NumericType::accept(NumericVisitor &nv, size_t data_position)
 {
-    nv.visit(*this, data_position, true, true);
+    set<size_t> chosen_repeated_node;
+    (*this).MarkRepeatedNodes(chosen_repeated_node);                  // we need to find the repeated node id first
+    nv.visit(*this, data_position, true, true, chosen_repeated_node); // pass that to the visitor and do whatever they want to do with it
 }
 
 // the operations will avoid using excessive amount of prentices
@@ -208,11 +210,11 @@ void NumericType::clear_pool()
     NumericType::pool->clear_pool();
 }
 
-void NumericType::MarkRepeatedNodes(NumericType &v, std::set<size_t> &chosen_repeated_node)
+void NumericType::MarkRepeatedNodes(std::set<size_t> &chosen_repeated_node)
 {
     queue<NumericType> candidates;
     vector<size_t> used_node_index;
-    candidates.push(v);
+    candidates.push(*this);
     // accumulate all the node index used
     // note that we do not care about repeated leaf index
     // and constant index

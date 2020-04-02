@@ -72,7 +72,7 @@ size_t NumericVisitorTreeHashing::write_to_operation_map(const size_t &left_oper
     return position;
 }
 
-void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool top_level, bool store_position)
+void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool top_level, bool store_position, const set<size_t> &chosen_repeated_node)
 {
     // cout<<data_position<<"| ";
     switch (n.operation)

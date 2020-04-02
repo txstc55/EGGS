@@ -52,7 +52,7 @@ public:
     std::vector<double> seen_consts = {};
 
     // visit function
-    void visit(NumericType &n, size_t data_position, bool top_level, bool store_position) override;
+    void visit(NumericType &n, size_t data_position, bool top_level, bool store_position, const std::set<size_t> &chosen_repeated_node) override;
 
     // accept function to generate file
     void accept(TreeToFileVisitor &visitor);
