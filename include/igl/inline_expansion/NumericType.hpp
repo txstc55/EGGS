@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 
 namespace ie
 {
@@ -29,7 +30,8 @@ public:
         Subtract,
         Divide,
         Multiply,
-        Sqrt
+        Sqrt,
+        Repeated
     };
 
     // Return a char representation of the operation.
@@ -89,6 +91,14 @@ public:
 
     // clear the pool
     static void clear_pool();
+
+    // For checking wheather there are repeated nodes, this will created repeated nodes type if repeatition is detected
+    // It will not mark all of the nodes, instead, it will mark the most top level node
+    // that is 1. repeated multiple times
+    // 2. can conver all of the following repeated nodes
+    // it will return true if there are repeated nodes
+    // otherwise return false
+    void MarkRepeatedNodes(NumericType &v, std::set<size_t> &chosen_repeated_node);
 
 private:
     // make it static

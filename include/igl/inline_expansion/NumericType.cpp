@@ -3,6 +3,9 @@
 #include "Visitors/NumericVisitor.hpp"
 #include <cstdlib>
 #include <iostream>
+#include <queue>
+#include <algorithm>
+#include <set>
 
 using namespace std;
 
@@ -19,7 +22,8 @@ map<NumericType::NodeType, char> NumericType::node_to_op = {{NumericType::Consta
                                                             {NumericType::Subtract, '-'},
                                                             {NumericType::Divide, '/'},
                                                             {NumericType::Multiply, '*'},
-                                                            {NumericType::Sqrt, 's'}};
+                                                            {NumericType::Sqrt, 's'},
+                                                            {NumericType::Repeated, 'r'}};
 
 char NumericType::char_for_operation()
 {
@@ -73,13 +77,9 @@ void NumericType::accept(NumericVisitor &nv, size_t data_position)
 NumericType NumericType::operator+(const NumericType &v) const
 {
     if (this->operation == Constant && this->const_value == 0)
-    {
         return v;
-    }
     if (v.operation == Constant && v.const_value == 0)
-    {
         return (*this);
-    }
     NumericType parent = NumericType();
     parent.self_index = NumericType::pool->tree_node_pool.size();
     parent.left_index = this->self_index;
@@ -92,9 +92,7 @@ NumericType NumericType::operator+(const NumericType &v) const
 NumericType NumericType::operator-(const NumericType &v) const
 {
     if (v.operation == Constant && v.const_value == 0)
-    {
         return (*this);
-    }
     NumericType parent = NumericType();
     parent.self_index = NumericType::pool->tree_node_pool.size();
     parent.left_index = this->self_index;
@@ -107,13 +105,9 @@ NumericType NumericType::operator-(const NumericType &v) const
 NumericType NumericType::operator*(const NumericType &v) const
 {
     if (this->operation == Constant && this->const_value == 1)
-    {
         return v;
-    }
     if (v.operation == Constant && v.const_value == 1)
-    {
         return (*this);
-    }
     NumericType parent = NumericType();
     parent.self_index = NumericType::pool->tree_node_pool.size();
     parent.left_index = this->self_index;
@@ -126,9 +120,7 @@ NumericType NumericType::operator*(const NumericType &v) const
 NumericType NumericType::operator/(const NumericType &v) const
 {
     if (v.operation == Constant && v.const_value == 1)
-    {
         return (*this);
-    }
     NumericType parent = NumericType();
     parent.self_index = NumericType::pool->tree_node_pool.size();
     parent.left_index = this->self_index;
@@ -157,9 +149,7 @@ NumericType NumericType::sqrt() const
 NumericType NumericType::operator*(const double v)
 {
     if (v == 1.0)
-    {
         return (*this);
-    }
     else
     {
         NumericType constant = NumericType(v);
@@ -170,9 +160,7 @@ NumericType NumericType::operator*(const double v)
 NumericType NumericType::operator/(const double v)
 {
     if (v == 1.0)
-    {
         return (*this);
-    }
     else
     {
         NumericType constant = NumericType(v);
@@ -183,9 +171,7 @@ NumericType NumericType::operator/(const double v)
 NumericType operator*(const double v, const NumericType &n)
 {
     if (v == 1.0)
-    {
         return (n);
-    }
     else
     {
         NumericType constant = NumericType(v);
@@ -220,6 +206,127 @@ NumericType NumericType::change_data_id(size_t i)
 void NumericType::clear_pool()
 {
     NumericType::pool->clear_pool();
+}
+
+void NumericType::MarkRepeatedNodes(NumericType &v, std::set<size_t> &chosen_repeated_node)
+{
+    queue<NumericType> candidates;
+    vector<size_t> used_node_index;
+    candidates.push(v);
+    // accumulate all the node index used
+    // note that we do not care about repeated leaf index
+    // and constant index
+    // because those things can be repeated no matter what
+    while (!candidates.empty())
+    {
+        NumericType c = candidates.front();
+        candidates.pop();
+        size_t left, right;
+        switch (c.operation)
+        {
+        case Leaf:
+            break;
+        case Constant:
+            break;
+        case Sqrt:
+        {
+            left = c.left_index;
+            candidates.push(NumericType::pool->tree_node_pool[left]);
+            used_node_index.push_back(c.self_index);
+            break;
+        }
+        case Add:
+        case Subtract:
+        case Divide:
+        case Multiply:
+        {
+            left = c.left_index;
+            right = c.right_index;
+            candidates.push(NumericType::pool->tree_node_pool[left]);
+            candidates.push(NumericType::pool->tree_node_pool[right]);
+            used_node_index.push_back(c.self_index);
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    bool has_repeated = false;
+    vector<size_t> repeated_indices;          // record what indices are repeated
+    map<size_t, size_t> repeated_index_count; // record the actual repeated indices and how many times they appeared
+    repeated_indices.reserve(used_node_index.size());
+    for (unsigned int i = 0; i < used_node_index.size(); i++)
+    {
+        if (repeated_index_count.find(used_node_index[i]) == repeated_index_count.end())
+            repeated_index_count.insert({used_node_index[i], 1});
+        else
+            repeated_index_count[used_node_index[i]]++;
+    }
+    for (auto p : repeated_index_count)
+    {
+        if (p.second > 1)
+        {
+            has_repeated = true;
+            repeated_indices.push_back(p.first);
+        }
+    }
+    // we have not detected any repeated entries
+    if (!has_repeated)
+        return;
+
+    sort(repeated_indices.begin(), repeated_indices.end()); // sort the repeated indices
+
+    set<size_t> chosen_repeated_node_children; // the choldren of the repeated nodes are repeated, but we do not want to label them
+    // we have detected repeated entries, now do the work of finding the top level node that covers all of its children indices
+    for (unsigned int i = repeated_indices.size() - 1; i >= 0; i--)
+    {
+        NumericType c = NumericType::pool->tree_node_pool[repeated_indices[i]];
+        // we are not children of anyone
+        if (chosen_repeated_node_children.find(repeated_indices[i]) == chosen_repeated_node_children.end())
+        {
+            size_t left, right;
+            left = c.left_index;         // get the node used for left branch
+            right = c.right_index;       // get the node used for right branch
+            bool left_fulfilled = true;  // check if for n parents, we also have n left nodes
+            bool right_fulfilled = true; // check if for n parents, we also have n right nodes
+            if (left != right)
+            {
+                if (repeated_index_count.find(left) != repeated_index_count.end())
+                {
+                    if (repeated_index_count[left] > repeated_index_count[c.self_index])
+                        left_fulfilled = false;
+                }
+                if (left_fulfilled && c.operation != Sqrt && repeated_index_count.find(right) != repeated_index_count.end())
+                {
+                    if (repeated_index_count[right] > repeated_index_count[c.self_index])
+                        right_fulfilled = false;
+                }
+            }
+            else
+            {
+                if (repeated_index_count.find(left) != repeated_index_count.end())
+                {
+                    if (repeated_index_count[left] > 2 * repeated_index_count[c.self_index])
+                        left_fulfilled = false;
+                }
+            }
+            // the occurrence of this node is the same
+            if (left_fulfilled && right_fulfilled)
+            {
+                chosen_repeated_node.insert(c.self_index);          // this node can cover all the repeated nodes descended from itself
+                chosen_repeated_node_children.insert(c.left_index); // we don't care that its children are repeated
+                if (c.operation != Sqrt)
+                    chosen_repeated_node_children.insert(c.right_index);
+            }
+        }
+        else
+        {
+            chosen_repeated_node_children.insert(c.left_index); // insert the children of children so we don't end up putting grand children into repeated operation
+            if (c.operation != Sqrt)
+                chosen_repeated_node_children.insert(c.right_index);
+        }
+    }
 }
 
 } // namespace ie
