@@ -69,9 +69,9 @@ void NumericType::set_pool(NumericPool *p)
 
 void NumericType::accept(NumericVisitor &nv, size_t data_position)
 {
-    set<size_t> chosen_repeated_node;
-    (*this).MarkRepeatedNodes(chosen_repeated_node);                  // we need to find the repeated node id first
-    nv.visit(*this, data_position, true, true, chosen_repeated_node); // pass that to the visitor and do whatever they want to do with it
+    map<size_t, size_t> chosen_repeated_node_map;
+    (*this).MarkRepeatedNodes(chosen_repeated_node_map);                  // we need to find the repeated node id first
+    nv.visit(*this, data_position, true, true, chosen_repeated_node_map); // pass that to the visitor and do whatever they want to do with it
 }
 
 // the operations will avoid using excessive amount of prentices
@@ -210,7 +210,7 @@ void NumericType::clear_pool()
     NumericType::pool->clear_pool();
 }
 
-void NumericType::MarkRepeatedNodes(std::set<size_t> &chosen_repeated_node)
+void NumericType::MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_node_map)
 {
     queue<NumericType> candidates;
     vector<size_t> used_node_index;
@@ -279,6 +279,7 @@ void NumericType::MarkRepeatedNodes(std::set<size_t> &chosen_repeated_node)
 
     sort(repeated_indices.begin(), repeated_indices.end()); // sort the repeated indices
 
+    std::set<size_t> chosen_repeated_node;
     set<size_t> chosen_repeated_node_children; // the choldren of the repeated nodes are repeated, but we do not want to label them
     // we have detected repeated entries, now do the work of finding the top level node that covers all of its children indices
     for (unsigned int i = repeated_indices.size() - 1; i >= 0; i--)
@@ -327,6 +328,59 @@ void NumericType::MarkRepeatedNodes(std::set<size_t> &chosen_repeated_node)
             chosen_repeated_node_children.insert(c.left_index); // insert the children of children so we don't end up putting grand children into repeated operation
             if (c.operation != Sqrt)
                 chosen_repeated_node_children.insert(c.right_index);
+        }
+    }
+
+    // now record from a bfs perspective, what order do we see those chosen nodes
+    queue<NumericType> nodes;
+    nodes.push(*this);
+    while ((!nodes.empty()) && chosen_repeated_node.size() != chosen_repeated_node_map.size())
+    {
+        NumericType c = nodes.front();
+        nodes.pop();
+        int left, right;
+        // check if it is in the chosen repeated nodes and if we have seen it
+        switch (c.operation)
+        {
+        case Leaf:
+            break;
+        case Constant:
+            break;
+        case Sqrt:
+        {
+            if (chosen_repeated_node.find(c.self_index) != chosen_repeated_node.end())
+            {
+                if (chosen_repeated_node_map.find(c.self_index) == chosen_repeated_node_map.end())
+                    chosen_repeated_node_map.insert({c.self_index, chosen_repeated_node_map.size()});
+            }
+            else
+            {
+                left = c.left_index;
+                nodes.push(NumericType::pool->tree_node_pool[left]);
+            }
+            break;
+        }
+        case Add:
+        case Subtract:
+        case Divide:
+        case Multiply:
+        {
+            if (chosen_repeated_node.find(c.self_index) != chosen_repeated_node.end())
+            {
+                if (chosen_repeated_node_map.find(c.self_index) == chosen_repeated_node_map.end())
+                    chosen_repeated_node_map.insert({c.self_index, chosen_repeated_node_map.size()});
+            }
+            else
+            {
+                left = c.left_index;
+                right = c.right_index;
+                nodes.push(NumericType::pool->tree_node_pool[left]);
+                nodes.push(NumericType::pool->tree_node_pool[right]);
+            }
+            break;
+        }
+        default:
+            break;
         }
     }
 }

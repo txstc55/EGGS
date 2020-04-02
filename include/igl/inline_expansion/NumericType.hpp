@@ -98,7 +98,7 @@ public:
     // 2. can conver all of the following repeated nodes
     // it will return true if there are repeated nodes
     // otherwise return false
-    void MarkRepeatedNodes(std::set<size_t> &chosen_repeated_node);
+    void MarkRepeatedNodes(std::map<size_t, size_t> &chosen_repeated_node_map);
 
 private:
     // make it static
