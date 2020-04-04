@@ -20,17 +20,21 @@ void TreeToFileVisitor::generate_all_operation_strings(NumericVisitorTreeHashing
 {
     for (unsigned int i = 0; i < trees.id_to_operation_map.size(); i++)
     {
-        if (trees.id_to_operation_map[i].second == 'c')
+        switch (trees.id_to_operation_map[i].second)
+        {
+        case 'c':
         {
             this->operation_strings.push_back(constant_to_variable_conversion(to_string(trees.seen_consts[trees.id_to_operation_map[i].first.first])));
             this->operation_matrix_ids.push_back({});
+            break;
         }
-        else if (trees.id_to_operation_map[i].second == 'i')
+        case 'i':
         {
             this->operation_strings.push_back("$");
             this->operation_matrix_ids.push_back({trees.id_to_operation_map[i].first.first});
+            break;
         }
-        else if (trees.id_to_operation_map[i].second == 's')
+        case 's':
         {
             string function_string = "";
             function_string += this->operation_char_to_string[trees.id_to_operation_map[i].second];
@@ -39,8 +43,20 @@ void TreeToFileVisitor::generate_all_operation_strings(NumericVisitorTreeHashing
             this->operation_strings.push_back(function_string);
             vector<size_t> tmp(this->operation_matrix_ids[trees.id_to_operation_map[i].first.first]);
             this->operation_matrix_ids.push_back(tmp);
+            break;
         }
-        else
+        case 'r':
+        {
+            string function_string = "";
+            function_string += this->operation_char_to_string[trees.id_to_operation_map[i].second];
+            function_string += "(";
+            function_string += this->operation_strings[trees.id_to_operation_map[i].first.first] + ")";
+            this->operation_strings.push_back(function_string);
+            vector<size_t> tmp(this->operation_matrix_ids[trees.id_to_operation_map[i].first.first]);
+            this->operation_matrix_ids.push_back(tmp);
+            break;
+        }
+        default:
         {
             string function_string = "";
             function_string += this->operation_char_to_string[trees.id_to_operation_map[i].second];
@@ -50,6 +66,8 @@ void TreeToFileVisitor::generate_all_operation_strings(NumericVisitorTreeHashing
             vector<size_t> tmp(this->operation_matrix_ids[trees.id_to_operation_map[i].first.first]);
             tmp.insert(tmp.end(), this->operation_matrix_ids[trees.id_to_operation_map[i].first.second].begin(), this->operation_matrix_ids[trees.id_to_operation_map[i].first.second].end());
             this->operation_matrix_ids.push_back(tmp);
+            break;
+        }
         }
     }
 }

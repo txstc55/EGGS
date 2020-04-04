@@ -31,7 +31,7 @@ public:
     std::vector<std::vector<size_t>> operation_matrix_ids = {};
 
     // operation to string
-    std::map<char, std::string> operation_char_to_string = {{'*', "_mm_mul_pd"}, {'+', "_mm_add_pd"}, {'-', "_mm_sub_pd"}, {'/', "_mm_div_pd"}, {'s', "_mm_sqrt_pd"}};
+    std::map<char, std::string> operation_char_to_string = {{'*', "_mm_mul_pd"}, {'+', "_mm_add_pd"}, {'-', "_mm_sub_pd"}, {'/', "_mm_div_pd"}, {'s', "_mm_sqrt_pd"}, {'r', ""}};
 
     virtual std::string constant_to_variable_conversion(std::string constant_string);
 

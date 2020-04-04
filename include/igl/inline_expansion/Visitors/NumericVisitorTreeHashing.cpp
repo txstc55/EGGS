@@ -85,7 +85,7 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
             // seen consts positions, seen consts
             // but also in operations, so we just need to extract that info from operation_to_id_map and store it in
             // data_array_operation_ids
-            this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{this->seen_consts_position[n.const_value], 0}, n.char_for_operation()}];
+            this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{this->seen_consts_position[n.const_value], 0}, 'c'}];
         }
         else
         {
@@ -94,7 +94,7 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
             // first we create the position mapping in seen_consts_position
             size_t new_const_position = write_to_constant_map(n.const_value);
             // now write to opeation map
-            size_t new_operation_id = write_to_operation_map(new_const_position, 0, n.char_for_operation());
+            size_t new_operation_id = write_to_operation_map(new_const_position, 0, 'c');
             // now we record the id of the tree in data_array_operation_ids
             this->data_array_operation_ids[data_position] = new_operation_id;
         }
@@ -105,7 +105,7 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
         if (this->operation_to_id_map.find({{n.matrix_id, 0}, 'i'}) != this->operation_to_id_map.end())
         {
             // if we have seen this matrix's stuffs, we need to set the operation, also push the data_id into the array
-            this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{n.matrix_id, 0}, n.char_for_operation()}];
+            this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{n.matrix_id, 0}, 'i'}];
             // now push the data_id
             this->data_array_used_data_ids[data_position].push_back(n.data_id);
         }
@@ -137,7 +137,7 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
         (*this).visit((*NumericType::pool).tree_node_pool[n.right_index], data_position, false, store_position, chosen_repeated_node_map);
         size_t right_operation_id = this->data_array_operation_ids[data_position];
         // now check if the operation exists
-        if (this->operation_to_id_map.find({{left_operation_id, right_operation_id}, n.operation}) != this->operation_to_id_map.end())
+        if (this->operation_to_id_map.find({{left_operation_id, right_operation_id}, n.char_for_operation()}) != this->operation_to_id_map.end())
         {
             // found this operation, store it in data_array_operation_ids
             this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{left_operation_id, right_operation_id}, n.char_for_operation()}];
@@ -156,7 +156,7 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
         (*this).visit((*NumericType::pool).tree_node_pool[n.left_index], data_position, false, store_position, chosen_repeated_node_map);
         size_t left_operation_id = this->data_array_operation_ids[data_position];
         // now check if the operation exists
-        if (this->operation_to_id_map.find({{left_operation_id, 0}, n.operation}) != this->operation_to_id_map.end())
+        if (this->operation_to_id_map.find({{left_operation_id, 0}, n.char_for_operation()}) != this->operation_to_id_map.end())
         {
             // found this operation, store it in data_array_operation_ids
             this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{left_operation_id, 0}, n.char_for_operation()}];
