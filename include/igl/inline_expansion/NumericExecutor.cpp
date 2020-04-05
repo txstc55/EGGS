@@ -11,9 +11,13 @@ NumericExecutor::NumericExecutor(Eigen::SparseMatrix<ie::NumericType, Eigen::Row
 {
     this->gap = gap;
     this->th = NumericVisitorTreeHashing(R.nonZeros());
-    tbb::parallel_for(size_t(0), size_t(R.nonZeros()), [&](size_t i) {
+    // tbb::parallel_for(size_t(0), size_t(R.nonZeros()), [&](size_t i) {
+    //     R.valuePtr()[i].accept(this->th, i, true);
+    // });
+    for (int i = 0; i < R.nonZeros(); i++)
+    {
         R.valuePtr()[i].accept(this->th, i, true);
-    });
+    }
     // this->choice = choice;
     // NumericType::clear_pool();
 
@@ -29,9 +33,13 @@ NumericExecutor::NumericExecutor(Eigen::SparseMatrix<ie::NumericType, Eigen::Col
 {
     this->gap = gap;
     this->th = NumericVisitorTreeHashing(R.nonZeros());
-    tbb::parallel_for(size_t(0), size_t(R.nonZeros()), [&](size_t i) {
+    // tbb::parallel_for(size_t(0), size_t(R.nonZeros()), [&](size_t i) {
+    //     R.valuePtr()[i].accept(this->th, i, true);
+    // });
+    for (int i = 0; i < R.nonZeros(); i++)
+    {
         R.valuePtr()[i].accept(this->th, i, true);
-    });
+    }
     // this->choice = choice;
     // NumericType::clear_pool();
 
@@ -49,9 +57,13 @@ NumericExecutor::NumericExecutor(Eigen::Matrix<ie::NumericType, Eigen::Dynamic, 
     int matrix_size = R.rows() * R.cols();
     this->gap = gap;
     this->th = NumericVisitorTreeHashing(matrix_size);
-    tbb::parallel_for(size_t(0), size_t(matrix_size), [&](size_t i) {
+    // tbb::parallel_for(size_t(0), size_t(matrix_size), [&](size_t i) {
+    //     R(i % R.rows(), i / R.rows()).accept(this->th, i, true);
+    // });
+    for (int i = 0; i < matrix_size; i++)
+    {
         R(i % R.rows(), i / R.rows()).accept(this->th, i, true);
-    });
+    }
     cout << "Group by tree type method chosen\n";
     this->tg = TreeToFileVisitorGroupByFunction(gap);
     this->th.accept(this->tg);
