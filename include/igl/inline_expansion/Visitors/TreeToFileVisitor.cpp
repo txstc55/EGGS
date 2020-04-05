@@ -80,7 +80,7 @@ void TreeToFileVisitor::generate_all_operation_strings(NumericVisitorTreeHashing
         }
         }
     }
-    std::cout << "Usable string generated\n";
+    // std::cout << "Usable string generated\n";
 }
 
 string TreeToFileVisitor::generate_usable_string(size_t ind)
