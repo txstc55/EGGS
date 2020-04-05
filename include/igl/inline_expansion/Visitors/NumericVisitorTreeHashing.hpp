@@ -42,9 +42,14 @@ public:
 
     // record for each tree in result array, what operation this element is
     std::vector<size_t> data_array_operation_ids;
+
     // record for each tree in result array, what data_ids this tree uses, note that we don't need
     // to record the matrix id because it will be stored in operation
     std::vector<std::vector<size_t>> data_array_used_data_ids;
+
+    // record for each tree in result array, what data_ids in repeated nodes each tree use
+    // for each tree, for each repeated operation, the vector of ids used
+    std::vector<std::vector<std::vector<size_t>>> data_array_repeated_node_data_ids;
 
     // storing the constants in it. the map is for looking up the position in seen_consts
     // because everything will be given a size_t as id
