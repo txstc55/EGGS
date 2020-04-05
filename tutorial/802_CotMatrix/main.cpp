@@ -106,7 +106,6 @@ int main(int argc, char *argv[])
   cd2.V = V;
   cd2.F = F;
   igl::cotmatrix_numeric(cd);
-  igl::cotmatrix_numeric_intermediate(cd2);
 
   t.start();
   for (int i = 0; i < 100; i++)
@@ -121,6 +120,7 @@ int main(int argc, char *argv[])
   std::cout << "Our method took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
   result_file << "Our method: " << t.getElapsedTimeInMicroSec() << "\n";
 
+  igl::cotmatrix_numeric_intermediate(cd2);
   t.start();
   for (int i = 0; i < 100; i++)
   {
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
   }
   std::cout << "Error: " << err << "\n";
   result_file << "Error of two methods: " << err << "\n";
-  
+
   err = 0;
   for (int i = 0; i < L.nonZeros(); i++)
   {
