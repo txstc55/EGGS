@@ -219,6 +219,7 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
             for (size_t element : this->data_array_repeated_node_data_ids[data_position][i])
                 this->data_array_used_data_ids[data_position].push_back(element); // push the repeated data ids at the end
         }
+        this->data_array_repeated_node_data_ids[data_position].resize(0);
     }
 }
 
