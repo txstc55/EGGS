@@ -106,18 +106,16 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
         {
             // if we have seen this matrix's stuffs, we need to set the operation, also push the data_id into the array
             this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{n.matrix_id, 0}, 'i'}];
-            // now push the data_id
-            this->data_array_used_data_ids[data_position].push_back(n.data_id);
         }
         else
         {
             // create the operation
-            size_t new_operation_id = write_to_operation_map(n.matrix_id, 0, n.char_for_operation());
+            size_t new_operation_id = write_to_operation_map(n.matrix_id, 0, 'i');
             // second, set that to the operation id for this position
             this->data_array_operation_ids[data_position] = new_operation_id;
-            // now push the data_id
-            this->data_array_used_data_ids[data_position].push_back(n.data_id);
         }
+        // now push the data_id
+        this->data_array_used_data_ids[data_position].push_back(n.data_id);
         break;
     }
     case NumericType::Add:
