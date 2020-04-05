@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
   igl::COTMATRIXData cd;
   cd.V = V;
   cd.F = F;
-  igl::cotmatrix_numeric_intermediate(cd);
+  igl::cotmatrix_numeric(cd);
 
   t.start();
   for (int i = 0; i < 100; i++)
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
     // {
     //   cd.result[i] = 0;
     // }
-    igl::cotmatrix_numeric_intermediate(cd);
+    igl::cotmatrix_numeric(cd);
   }
   t.stop();
   std::cout << "Our method took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
