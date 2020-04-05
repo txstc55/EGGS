@@ -183,17 +183,41 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
         if (this->data_array_repeated_node_data_ids[data_position][repeated_node_id].size() == 0)
         {                                                                                                                                   // if we have not inserted elements before
             this->data_array_repeated_node_data_ids[data_position][repeated_node_id].reserve(after_insertion_size - before_insertion_size); // reserve that many ids
+            // std::cout << "Data position " << data_position << " node id " << n.self_index << " repeated id " << repeated_node_id << " used ids: ";
             for (size_t i = before_insertion_size; i < after_insertion_size; i++)
             {
-                this->data_array_repeated_node_data_ids[data_position][repeated_node_id].push_back(this->data_array_operation_ids[data_position]); // store the ids into the repeated ids
+                this->data_array_repeated_node_data_ids[data_position][repeated_node_id].push_back(this->data_array_used_data_ids[data_position][i]); // store the ids into the repeated ids
+                // cout << this->data_array_used_data_ids[data_position][i] << " ";
             }
+            // std::cout << "\n";
         }
+        else
+        {
+            // std::cout << "Data position " << data_position << " node id " << n.self_index << " repeated id " << repeated_node_id << " used ids: ";
+            // for (size_t i = before_insertion_size; i < after_insertion_size; i++)
+            // {
+            //     cout << this->data_array_used_data_ids[data_position][i] << " ";
+            // }
+            // std::cout << "\n";
+        }
+        this->data_array_used_data_ids[data_position].resize(before_insertion_size); // remove those ids
         // now work on inserting this as a repeated node
-        if (this->operation_to_id_map.find({{this->data_array_operation_ids[data_position], repeated_node_id}, 'r'})!=this->operation_to_id_map.end()){
+        if (this->operation_to_id_map.find({{this->data_array_operation_ids[data_position], repeated_node_id}, 'r'}) != this->operation_to_id_map.end())
+        {
             this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{this->data_array_operation_ids[data_position], repeated_node_id}, 'r'}];
-        }else{
+        }
+        else
+        {
             size_t new_operation_id = write_to_operation_map(this->data_array_operation_ids[data_position], repeated_node_id, 'r');
             this->data_array_operation_ids[data_position] = new_operation_id;
+        }
+    }
+    if (top_level)
+    {
+        for (int i = 0; i < chosen_repeated_node_map.size(); i++)
+        {
+            for (size_t element : this->data_array_repeated_node_data_ids[data_position][i])
+                this->data_array_used_data_ids[data_position].push_back(element); // push the repeated data ids at the end
         }
     }
 }

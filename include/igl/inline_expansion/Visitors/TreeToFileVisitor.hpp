@@ -30,6 +30,12 @@ public:
     // what matrix id are used here
     std::vector<std::vector<size_t>> operation_matrix_ids = {};
 
+    // the actual string used
+    std::vector<std::string> usable_strings = {};
+
+    // for each operation, what are the repeated operation ids
+    std::vector<std::map<size_t, size_t>> repeated_operation_id_map = {};
+
     // operation to string
     std::map<char, std::string> operation_char_to_string = {{'*', "_mm_mul_pd"}, {'+', "_mm_add_pd"}, {'-', "_mm_sub_pd"}, {'/', "_mm_div_pd"}, {'s', "_mm_sqrt_pd"}, {'r', ""}};
 

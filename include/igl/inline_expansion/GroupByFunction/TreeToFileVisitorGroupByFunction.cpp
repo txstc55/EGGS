@@ -69,6 +69,8 @@ void TreeToFileVisitorGroupByFunction::visit(NumericVisitorTreeHashing &trees)
             }
             else
             {
+                // function string
+                string usable_string = generate_usable_string(i); // generate the function string
                 // setting element for loops
                 this->data["loop_start"].push_back(loop_index);                         // where does this loop start
                 const size_t operation_ids_size = this->operation_matrix_ids[i].size(); // the number of matrix ids we will need to access
@@ -76,9 +78,9 @@ void TreeToFileVisitorGroupByFunction::visit(NumericVisitorTreeHashing &trees)
                 this->data["loop_gap"].push_back(operation_ids_size); // because there are that many instances for each loop
                 // we need to know the max vids used to avoid repeated allocation, this is only for sequential code
                 // because we can just allocate that many __m128d at the beginning
-                if (this->operation_matrix_ids[i].size() + 1 > this->data["max_vids"])
+                if (this->operation_matrix_ids[i].size() > this->data["max_vids"])
                 {
-                    this->data["max_vids"] = this->operation_matrix_ids[i].size() + 1;
+                    this->data["max_vids"] = this->operation_matrix_ids[i].size();
                 }
                 // what matrix id we use
                 this->data["matrix_ids"].push_back(this->operation_matrix_ids[i]); // what actual matrix we use for this type of tree
@@ -96,8 +98,6 @@ void TreeToFileVisitorGroupByFunction::visit(NumericVisitorTreeHashing &trees)
                 // where the loop ends
                 loop_index += grouped_data_ids[i].size() * operation_ids_size; // how many indices we accessed, this will be used to record where the next loop will start
 
-                // function string
-                string usable_string = generate_usable_string(i);        // generate the function string
                 this->data["function_strings"].push_back(usable_string); // because we record all the strings
                 this->file_name = md5(this->file_name + usable_string);  // the file is only hashed by the function strings not the loop indices, which is bad but I want later on to remove the use of indices so that same structure can have the same file
 

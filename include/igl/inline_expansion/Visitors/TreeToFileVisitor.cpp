@@ -18,20 +18,24 @@ string TreeToFileVisitor::constant_to_variable_conversion(string constant_string
 
 void TreeToFileVisitor::generate_all_operation_strings(NumericVisitorTreeHashing &trees)
 {
+    // std::cout<<"operation total number: "<<trees.id_to_operation_map.size()<<"\n";
     for (unsigned int i = 0; i < trees.id_to_operation_map.size(); i++)
     {
+        // std::cout<<"at operation "<<i<<" operation char: "<<trees.id_to_operation_map[i].second<<"\n";
         switch (trees.id_to_operation_map[i].second)
         {
         case 'c':
         {
             this->operation_strings.push_back(constant_to_variable_conversion(to_string(trees.seen_consts[trees.id_to_operation_map[i].first.first])));
             this->operation_matrix_ids.push_back({});
+            this->repeated_operation_id_map.push_back({});
             break;
         }
         case 'i':
         {
             this->operation_strings.push_back("$");
             this->operation_matrix_ids.push_back({trees.id_to_operation_map[i].first.first});
+            this->repeated_operation_id_map.push_back({});
             break;
         }
         case 's':
@@ -43,17 +47,20 @@ void TreeToFileVisitor::generate_all_operation_strings(NumericVisitorTreeHashing
             this->operation_strings.push_back(function_string);
             vector<size_t> tmp(this->operation_matrix_ids[trees.id_to_operation_map[i].first.first]);
             this->operation_matrix_ids.push_back(tmp);
+            map<size_t, size_t> children_repeated_operation_id_map = this->repeated_operation_id_map[trees.id_to_operation_map[i].first.first]; // record for the left child, what operations are repeated
+            this->repeated_operation_id_map.push_back(children_repeated_operation_id_map);                                                      // record for this operation, what operations are repeated
             break;
         }
         case 'r':
         {
             string function_string = "";
-            function_string += this->operation_char_to_string[trees.id_to_operation_map[i].second];
             function_string += "(";
-            function_string += this->operation_strings[trees.id_to_operation_map[i].first.first] + ")";
+            function_string += "r" + to_string(trees.id_to_operation_map[i].first.second);
+            function_string += ")";
             this->operation_strings.push_back(function_string);
-            vector<size_t> tmp(this->operation_matrix_ids[trees.id_to_operation_map[i].first.first]);
-            this->operation_matrix_ids.push_back(tmp);
+            // vector<size_t> tmp(this->operation_matrix_ids[trees.id_to_operation_map[i].first.first]);
+            this->operation_matrix_ids.push_back({}); // we will push them at the end, for now we do not need those matrix ids when they are in a repeated node
+            this->repeated_operation_id_map.push_back({{trees.id_to_operation_map[i].first.second, trees.id_to_operation_map[i].first.first}});
             break;
         }
         default:
@@ -63,18 +70,32 @@ void TreeToFileVisitor::generate_all_operation_strings(NumericVisitorTreeHashing
             function_string += "(";
             function_string += this->operation_strings[trees.id_to_operation_map[i].first.first] + ", " + this->operation_strings[trees.id_to_operation_map[i].first.second] + ")";
             this->operation_strings.push_back(function_string);
-            vector<size_t> tmp(this->operation_matrix_ids[trees.id_to_operation_map[i].first.first]);
-            tmp.insert(tmp.end(), this->operation_matrix_ids[trees.id_to_operation_map[i].first.second].begin(), this->operation_matrix_ids[trees.id_to_operation_map[i].first.second].end());
-            this->operation_matrix_ids.push_back(tmp);
+            vector<size_t> tmp(this->operation_matrix_ids[trees.id_to_operation_map[i].first.first]);                                                                                                                        // get what matrix we need from left child
+            tmp.insert(tmp.end(), this->operation_matrix_ids[trees.id_to_operation_map[i].first.second].begin(), this->operation_matrix_ids[trees.id_to_operation_map[i].first.second].end());                               // get what matrix we need from right child
+            this->operation_matrix_ids.push_back(tmp);                                                                                                                                                                       // record what matrix ids we need
+            map<size_t, size_t> children_repeated_operation_id_map = this->repeated_operation_id_map[trees.id_to_operation_map[i].first.first];                                                                              // record for the left child, what operations are repeated
+            children_repeated_operation_id_map.insert(this->repeated_operation_id_map[trees.id_to_operation_map[i].first.second].begin(), this->repeated_operation_id_map[trees.id_to_operation_map[i].first.second].end()); // add the right child
+            this->repeated_operation_id_map.push_back(children_repeated_operation_id_map);                                                                                                                                   // record for this operation, what operations are repeated
             break;
         }
         }
     }
+    std::cout << "Usable string generated\n";
 }
 
 string TreeToFileVisitor::generate_usable_string(size_t ind)
 {
+    if (this->usable_strings.size() != this->operation_strings.size())
+    {
+        this->usable_strings.resize(this->operation_strings.size());
+    }
+    if (this->usable_strings[ind].size() != 0)
+    {
+        return this->usable_strings[ind];
+    }
+    // std::cout<<"Generating usable string: "<<ind<<"\n";
     string final_output = "";
+    string repeated_operation_string = "";
     unsigned int count = 0;
     for (unsigned int i = 0; i < this->operation_strings[ind].size(); i++)
     {
@@ -84,10 +105,39 @@ string TreeToFileVisitor::generate_usable_string(size_t ind)
             count++;
         }
         else
-        {
             final_output += this->operation_strings[ind][i];
-        }
     }
+    // std::cout<<"Base funcion finished\n";
+    for (unsigned int i = 0; i < this->repeated_operation_id_map[ind].size(); i++)
+    {
+        // generate the function string for the repeated operations
+        repeated_operation_string += "        __m128d r" + to_string(i) + " = ";
+        string raw_function_string = this->operation_strings[this->repeated_operation_id_map[ind][i]];
+        // std::cout<<raw_function_string<<"\n";
+        for (unsigned int j = 0; j < raw_function_string.size(); j++)
+        {
+            if (raw_function_string[j] == '$')
+            {
+                repeated_operation_string += "v" + to_string(count);
+                count++;
+            }
+            else
+                repeated_operation_string += raw_function_string[j];
+        }
+        repeated_operation_string += ";\n";
+    }
+    // std::cout<<"Repeated function finished\n";
+    final_output = "        __m128d v" + to_string(count) + " = " + final_output;
+    final_output = repeated_operation_string + final_output; // concatenate the repeated function string and the final function string
+    // now we want to get the matrix id for the repeated operations, putting at the end
+    for (unsigned int i = 0; i < this->repeated_operation_id_map[ind].size(); i++)
+    {
+        const size_t repeated_ind = this->repeated_operation_id_map[ind][i];
+        vector<size_t> matrix_ids = this->operation_matrix_ids[repeated_ind];
+        this->operation_matrix_ids[ind].insert(this->operation_matrix_ids[ind].end(), matrix_ids.begin(), matrix_ids.end());
+    }
+    // std::cout<<"Finished generating usable string: "<<ind<<"\n";
+    this->usable_strings[ind] = final_output;
     return final_output;
 }
 
