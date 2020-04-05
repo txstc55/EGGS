@@ -16,6 +16,7 @@ NumericVisitorTreeHashing::NumericVisitorTreeHashing(unsigned int data_size)
 {
     this->data_array_operation_ids.resize(data_size);
     this->data_array_used_data_ids.resize(data_size);
+    this->data_array_repeated_node_data_ids.resize(data_size);
 }
 
 size_t NumericVisitorTreeHashing::write_to_constant_map(const double &const_value)
@@ -74,7 +75,9 @@ size_t NumericVisitorTreeHashing::write_to_operation_map(const size_t &left_oper
 
 void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool top_level, bool store_position, const map<size_t, size_t> &chosen_repeated_node_map)
 {
-    // cout<<data_position<<"| ";
+    if (top_level)
+        this->data_array_repeated_node_data_ids[data_position].resize(chosen_repeated_node_map.size()); // we have that many repeated nodes, for each repeated node, it will have its own vector of data ids
+    const size_t before_insertion_size = this->data_array_used_data_ids[data_position].size();          // record before inserting ids for this tree, how many data ids we have, this is for the case where it is a repeated tree, then we can just extract those ids
     switch (n.operation)
     {
     case NumericType::Constant:
@@ -172,6 +175,27 @@ void NumericVisitorTreeHashing::visit(NumericType &n, size_t data_position, bool
     // if (top_level){
     //     printf("Top level, operation id is %d, number of repeated entries are %d\n", this->data_array_operation_ids[data_position], chosen_repeated_node_map.size());
     // }
+    // if n itself is a repeated node
+    if (chosen_repeated_node_map.find(n.self_index) != chosen_repeated_node_map.end())
+    {
+        const size_t repeated_node_id = chosen_repeated_node_map.at(n.self_index);                // when do we see this repeated node
+        const size_t after_insertion_size = this->data_array_used_data_ids[data_position].size(); // how many ids we have now for this tree
+        if (this->data_array_repeated_node_data_ids[data_position][repeated_node_id].size() == 0)
+        {                                                                                                                                   // if we have not inserted elements before
+            this->data_array_repeated_node_data_ids[data_position][repeated_node_id].reserve(after_insertion_size - before_insertion_size); // reserve that many ids
+            for (size_t i = before_insertion_size; i < after_insertion_size; i++)
+            {
+                this->data_array_repeated_node_data_ids[data_position][repeated_node_id].push_back(this->data_array_operation_ids[data_position]); // store the ids into the repeated ids
+            }
+        }
+        // now work on inserting this as a repeated node
+        if (this->operation_to_id_map.find({{this->data_array_operation_ids[data_position], repeated_node_id}, 'r'})!=this->operation_to_id_map.end()){
+            this->data_array_operation_ids[data_position] = this->operation_to_id_map[{{this->data_array_operation_ids[data_position], repeated_node_id}, 'r'}];
+        }else{
+            size_t new_operation_id = write_to_operation_map(this->data_array_operation_ids[data_position], repeated_node_id, 'r');
+            this->data_array_operation_ids[data_position] = new_operation_id;
+        }
+    }
 }
 
 void NumericVisitorTreeHashing::accept(TreeToFileVisitor &visitor)
