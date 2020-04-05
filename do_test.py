@@ -296,9 +296,11 @@ elif example == 3:
             eigen_data["COMPUTE"] = float(line.split(":")[1])
         elif count == 1:
             numeric1_data["COMPUTE"] = float(line.split(":")[1])
+        elif count == 2:
+            numeric2_data["COMPUTE"] = float(line.split(":")[1])
         else:
             print(line)
         count += 1
     with open("result_datas/all_result_cot_matrix.json", 'w') as j:
-        json.dump([eigen_data, numeric1_data], j)
+        json.dump([eigen_data, numeric1_data, numeric2_data], j)
     
