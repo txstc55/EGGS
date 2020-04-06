@@ -10,11 +10,14 @@ parser.add_argument(
     "--e", default=0, help="Example, 0 for slim, 1 for cotangent smoothing, 2 for optical flow")
 parser.add_argument("--w", default="1000000",
                     help="Example, 0 for slim, 1 for cotangent smoothing")
+parser.add_argument("--o", default="",
+                    help="output json file name")
 args = parser.parse_args()
 file = args.f
 example = int(args.e)
 demo_type = int(args.d)
 weight = str(int(args.w))
+output = str(args.o)
 
 if (file != ""):
     file = " -f "+file
@@ -154,8 +157,13 @@ if example == 0:
                 numeric2_data["SOLVE"] += float(line.split(": ")[1])
             count += 1
 
-    with open('result_datas/all_result.json', 'w') as j:
-        json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+    if output == "":
+        with open('result_datas/all_result.json', 'w') as j:
+            json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+    else:
+        with open("result_datas/"+output+".json", 'w')as j:
+            json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+
 elif example == 1:
     # do eigen tests
     os.system("cd build && ./tutorial/205_Laplacian_bin -w " +
@@ -228,8 +236,12 @@ elif example == 1:
                 numeric2_data["SOLVE"] += float(line.split(": ")[1])
             count += 1
 
-    with open('result_datas/all_result_cot.json', 'w') as j:
-        json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+    if output == "":
+        with open('result_datas/all_result_cot.json', 'w') as j:
+            json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+    else:
+        with open("result_datas/"+output+".json", 'w')as j:
+            json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
 
 elif example == 2:
     # do eigen tests
@@ -282,8 +294,12 @@ elif example == 2:
                 numeric2_data["SOLVE"] += float(line.split(": ")[1])
             count += 1
 
-    with open('result_datas/all_result_opt.json', 'w') as j:
-        json.dump([eigen_data, numeric1_data, numeric2_data], j)
+    if output == "":
+        with open('result_datas/all_result_opt.json', 'w') as j:
+            json.dump([eigen_data, numeric1_data, numeric2_data], j)
+    else:
+        with open("result_datas/"+output+".json", 'w')as j:
+            json.dump([eigen_data, numeric1_data, numeric2_data], j)
 
 elif example == 3:
     os.system("cd build && ./tutorial/802_CotMatrix_bin"+file+" && cd ..")
@@ -301,6 +317,10 @@ elif example == 3:
         else:
             print(line)
         count += 1
-    with open("result_datas/all_result_cot_matrix.json", 'w') as j:
-        json.dump([eigen_data, numeric1_data, numeric2_data], j)
-    
+
+    if output == "":
+        with open("result_datas/all_result_cot_matrix.json", 'w') as j:
+            json.dump([eigen_data, numeric1_data, numeric2_data], j)
+    else:
+        with open("result_datas/"+output+".json", 'w')as j:
+            json.dump([eigen_data, numeric1_data, numeric2_data], j)

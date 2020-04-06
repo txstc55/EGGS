@@ -3,11 +3,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
+json_file_name = "result_datas/all_result.json"
 
 results = []
 if len(sys.argv) == 2:
     with open(sys.argv[1], 'r') as j:
         results = json.load(j)
+        json_file_name = sys.argv[1]
 else:
     with open('result_datas/all_result.json', 'r') as j:
         results = json.load(j)
@@ -51,8 +53,9 @@ for r1, r2, r3 in zip(p1, p2, p3):
              ha="center", va="center", color="white", fontsize=5, fontweight="bold")
     plt.text(r3.get_x() + r3.get_width() / 2., h1 + h2 + h3 / 2., "%d" %
              h3, ha="center", va="center", color="white", fontsize=5, fontweight="bold")
+save_plot_name = json_file_name.split(".")[0].split("/")[-1]
 
-plt.show()
+plt.savefig("test_result_graphs/"+save_plot_name+".png", dpi=200)
 
 
 print(results)
