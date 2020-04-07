@@ -53,7 +53,7 @@ mkl_data["ASSEMBLE"] = 0
 
 
 numeric1_data = {}
-numeric1_data["name"] = "NUMERIC"
+numeric1_data["name"] = "OURS"
 numeric1_data["COMPUTE"] = 0
 numeric1_data["SOLVE"] = 0
 numeric1_data["ASSEMBLE"] = 0
