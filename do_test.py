@@ -82,10 +82,10 @@ if example == 0:
               demo_type + file + " && cd ..")
     os.system("mv build/result.txt result_datas/result_numeric1.txt && mv build/slim.obj result_datas/slim_numeric1.obj")
 
-    # do numeric 2 tests
-    os.system("cd build && ./tutorial/709_SLIM_bin -m 4" +
-              demo_type + file + " && cd ..")
-    os.system("mv build/result.txt result_datas/result_numeric2.txt && mv build/slim.obj result_datas/slim_numeric2.obj")
+    # # do numeric 2 tests
+    # os.system("cd build && ./tutorial/709_SLIM_bin -m 4" +
+    #           demo_type + file + " && cd ..")
+    # os.system("mv build/result.txt result_datas/result_numeric2.txt && mv build/slim.obj result_datas/slim_numeric2.obj")
 
     f = open("result_datas/result_eigen.txt")
     count = 0
@@ -100,23 +100,6 @@ if example == 0:
                 eigen_data["SOLVE"] += float(line.split(": ")[1])
             count += 1
 
-    # cached_data = {}
-    # cached_data["name"] = "CACHED"
-    # cached_data["COMPUTE"] = 0
-    # cached_data["SOLVE"] = 0
-    # cached_data["ASSEMBLE"] = 0
-    # f = open("result_datas/result_cached.txt")
-    # count = 0
-    # for line in f:
-    #     if not line.startswith("START"):
-    #         count = count%11
-    #         if count == 0 or count == 1 or count == 2 or count == 5 or count == 6 or count == 8:
-    #             cached_data["ASSEMBLE"] += float(line.split(": ")[1])
-    #         elif count == 3 or count == 4 or count == 7:
-    #             cached_data["COMPUTE"] += float(line.split(": ")[1])
-    #         else:
-    #             cached_data["SOLVE"] += float(line.split(": ")[1])
-    #         count+=1
 
     f = open("result_datas/result_mkl.txt")
     count = 0
@@ -144,25 +127,25 @@ if example == 0:
                 numeric1_data["SOLVE"] += float(line.split(": ")[1])
             count += 1
 
-    f = open("result_datas/result_numeric2.txt")
-    count = 0
-    for line in f:
-        if not line.startswith("START"):
-            count = count % 10
-            if (count >= 0 and count <= 3) or count == 5:
-                numeric2_data["ASSEMBLE"] += float(line.split(": ")[1])
-            elif count == 4 or count == 6 or count == 7:
-                numeric2_data["COMPUTE"] += float(line.split(": ")[1])
-            else:
-                numeric2_data["SOLVE"] += float(line.split(": ")[1])
-            count += 1
+    # f = open("result_datas/result_numeric2.txt")
+    # count = 0
+    # for line in f:
+    #     if not line.startswith("START"):
+    #         count = count % 10
+    #         if (count >= 0 and count <= 3) or count == 5:
+    #             numeric2_data["ASSEMBLE"] += float(line.split(": ")[1])
+    #         elif count == 4 or count == 6 or count == 7:
+    #             numeric2_data["COMPUTE"] += float(line.split(": ")[1])
+    #         else:
+    #             numeric2_data["SOLVE"] += float(line.split(": ")[1])
+    #         count += 1
 
     if output == "":
         with open('result_datas/all_result.json', 'w') as j:
-            json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+            json.dump([eigen_data, mkl_data, numeric1_data], j)
     else:
         with open("result_datas/"+output+".json", 'w')as j:
-            json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+            json.dump([eigen_data, mkl_data, numeric1_data], j)
 
 elif example == 1:
     # do eigen tests
@@ -179,10 +162,10 @@ elif example == 1:
               weight+" -m 3" + file + " && cd ..")
     os.system("mv build/result_cot.txt result_datas/result_cot_numeric1.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_numeric1.obj")
 
-    # do numeric 2 tests
-    os.system("cd build && ./tutorial/205_Laplacian_bin -w " +
-              weight+" -m 4" + file + " && cd ..")
-    os.system("mv build/result_cot.txt result_datas/result_cot_numeric2.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_numeric2.obj")
+    # # do numeric 2 tests
+    # os.system("cd build && ./tutorial/205_Laplacian_bin -w " +
+    #           weight+" -m 4" + file + " && cd ..")
+    # os.system("mv build/result_cot.txt result_datas/result_cot_numeric2.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_numeric2.obj")
 
     f = open("result_datas/result_cot_eigen.txt")
     count = 0
@@ -223,37 +206,36 @@ elif example == 1:
                 numeric1_data["SOLVE"] += float(line.split(": ")[1])
             count += 1
 
-    f = open("result_datas/result_cot_numeric2.txt")
-    count = 0
-    for line in f:
-        if not line.startswith("START"):
-            count = count % 7
-            if count <= 2:
-                numeric2_data["ASSEMBLE"] += float(line.split(": ")[1])
-            elif count == 4 or count == 3:
-                numeric2_data["COMPUTE"] += float(line.split(": ")[1])
-            else:
-                numeric2_data["SOLVE"] += float(line.split(": ")[1])
-            count += 1
+    # f = open("result_datas/result_cot_numeric2.txt")
+    # count = 0
+    # for line in f:
+    #     if not line.startswith("START"):
+    #         count = count % 7
+    #         if count <= 2:
+    #             numeric2_data["ASSEMBLE"] += float(line.split(": ")[1])
+    #         elif count == 4 or count == 3:
+    #             numeric2_data["COMPUTE"] += float(line.split(": ")[1])
+    #         else:
+    #             numeric2_data["SOLVE"] += float(line.split(": ")[1])
+    #         count += 1
 
     if output == "":
         with open('result_datas/all_result_cot.json', 'w') as j:
-            json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+            json.dump([eigen_data, mkl_data, numeric1_data], j)
     else:
         with open("result_datas/"+output+".json", 'w')as j:
-            json.dump([eigen_data, mkl_data, numeric1_data, numeric2_data], j)
+            json.dump([eigen_data, mkl_data, numeric1_data], j)
 
 elif example == 2:
     # do eigen tests
     os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 0" + " && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_eigen.txt")
-    # do numeric multi tests
-    os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 3" + " && cd ..")
-    os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
+    # # do numeric multi tests
+    # os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 3" + " && cd ..")
+    # os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
-    # do numeric single tests
     os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 4" + " && cd ..")
-    os.system("mv build/result_opt.txt result_datas/result_opt_numeric2.txt")
+    os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
     f = open("result_datas/result_opt_eigen.txt")
     count = 0
@@ -268,20 +250,20 @@ elif example == 2:
                 eigen_data["SOLVE"] += float(line.split(": ")[1])
             count += 1
 
-    f = open("result_datas/result_opt_numeric1.txt")
-    count = 0
-    for line in f:
-        if not line.startswith("START"):
-            count = count % 6
-            if count == 0 or count == 2 or count == 5:
-                numeric1_data["ASSEMBLE"] += float(line.split(": ")[1])
-            elif count == 1:
-                numeric1_data["COMPUTE"] += float(line.split(": ")[1])
-            else:
-                numeric1_data["SOLVE"] += float(line.split(": ")[1])
-            count += 1
+    # f = open("result_datas/result_opt_numeric1.txt")
+    # count = 0
+    # for line in f:
+    #     if not line.startswith("START"):
+    #         count = count % 6
+    #         if count == 0 or count == 2 or count == 5:
+    #             numeric1_data["ASSEMBLE"] += float(line.split(": ")[1])
+    #         elif count == 1:
+    #             numeric1_data["COMPUTE"] += float(line.split(": ")[1])
+    #         else:
+    #             numeric1_data["SOLVE"] += float(line.split(": ")[1])
+    #         count += 1
 
-    f = open("result_datas/result_opt_numeric2.txt")
+    f = open("result_datas/result_opt_numeric1.txt")
     count = 0
     for line in f:
         if not line.startswith("START"):
@@ -296,10 +278,10 @@ elif example == 2:
 
     if output == "":
         with open('result_datas/all_result_opt.json', 'w') as j:
-            json.dump([eigen_data, numeric1_data, numeric2_data], j)
+            json.dump([eigen_data, numeric1_data], j)
     else:
         with open("result_datas/"+output+".json", 'w')as j:
-            json.dump([eigen_data, numeric1_data, numeric2_data], j)
+            json.dump([eigen_data, numeric1_data], j)
 
 elif example == 3:
     os.system("cd build && ./tutorial/802_CotMatrix_bin"+file+" && cd ..")
@@ -312,15 +294,15 @@ elif example == 3:
             eigen_data["COMPUTE"] = float(line.split(":")[1])
         elif count == 1:
             numeric1_data["COMPUTE"] = float(line.split(":")[1])
-        elif count == 2:
-            numeric2_data["COMPUTE"] = float(line.split(":")[1])
+        # elif count == 2:
+        #     numeric2_data["COMPUTE"] = float(line.split(":")[1])
         else:
             print(line)
         count += 1
 
     if output == "":
         with open("result_datas/all_result_cot_matrix.json", 'w') as j:
-            json.dump([eigen_data, numeric1_data, numeric2_data], j)
+            json.dump([eigen_data, numeric1_data], j)
     else:
         with open("result_datas/"+output+".json", 'w')as j:
-            json.dump([eigen_data, numeric1_data, numeric2_data], j)
+            json.dump([eigen_data, numeric1_data], j)
