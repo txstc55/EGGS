@@ -100,11 +100,11 @@ int main(int argc, char *argv[])
   result_file << "Eigen method: " << t.getElapsedTimeInMicroSec() << "\n";
 
   igl::COTMATRIXData cd;
-  igl::COTMATRIXData cd2;
+  // igl::COTMATRIXData cd2;
   cd.V = V;
   cd.F = F;
-  cd2.V = V;
-  cd2.F = F;
+  // cd2.V = V;
+  // cd2.F = F;
   igl::cotmatrix_numeric(cd);
 
   t.start();
@@ -120,19 +120,19 @@ int main(int argc, char *argv[])
   std::cout << "Our method took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
   result_file << "Our method: " << t.getElapsedTimeInMicroSec() << "\n";
 
-  igl::cotmatrix_numeric_intermediate(cd2);
-  t.start();
-  for (int i = 0; i < 100; i++)
-  {
-    // for (int i = 0; i < cd.result.size(); i++)
-    // {
-    //   cd.result[i] = 0;
-    // }
-    igl::cotmatrix_numeric_intermediate(cd2);
-  }
-  t.stop();
-  std::cout << "Our method with intermediate result took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
-  result_file << "Our method 2: " << t.getElapsedTimeInMicroSec() << "\n";
+  // igl::cotmatrix_numeric_intermediate(cd2);
+  // t.start();
+  // for (int i = 0; i < 100; i++)
+  // {
+  //   // for (int i = 0; i < cd.result.size(); i++)
+  //   // {
+  //   //   cd.result[i] = 0;
+  //   // }
+  //   igl::cotmatrix_numeric_intermediate(cd2);
+  // }
+  // t.stop();
+  // std::cout << "Our method with intermediate result took: " << t.getElapsedTimeInMicroSec() / 100 << " microseconds on average\n";
+  // result_file << "Our method 2: " << t.getElapsedTimeInMicroSec() << "\n";
 
   double err = 0;
   for (int i = 0; i < L.nonZeros(); i++)
@@ -142,13 +142,13 @@ int main(int argc, char *argv[])
   std::cout << "Error: " << err << "\n";
   result_file << "Error of two methods: " << err << "\n";
 
-  err = 0;
-  for (int i = 0; i < L.nonZeros(); i++)
-  {
-    err += std::pow(L.valuePtr()[i] - cd2.result[i], 2);
-  }
+  // err = 0;
+  // for (int i = 0; i < L.nonZeros(); i++)
+  // {
+  //   err += std::pow(L.valuePtr()[i] - cd2.result[i], 2);
+  // }
 
-  std::cout << "Error: " << err << "\n";
-  result_file << "Error of two methods: " << err << "\n";
+  // std::cout << "Error: " << err << "\n";
+  // result_file << "Error of two methods: " << err << "\n";
   result_file.close();
 }
