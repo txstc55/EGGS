@@ -15,9 +15,9 @@ else:
     with open('result_datas/all_result.json', 'r') as j:
         results = json.load(j)
 
-assemble = [float(x["ASSEMBLE"])/100.0/100.0 for x in results]
-compute = [float(x["COMPUTE"])/100.0/100.0 for x in results]
-solve = [float(x["SOLVE"])/100.0/100.0 for x in results]
+assemble = [float(x["ASSEMBLE"])/100.0/1000.0 for x in results]
+compute = [float(x["COMPUTE"])/100.0/1000.0 for x in results]
+solve = [float(x["SOLVE"])/100.0/1000.0 for x in results]
 
 sum = []
 for i in range(len(assemble)):
@@ -55,12 +55,12 @@ for r1, r2, r3 in zip(p1, p2, p3):
     h2 = r2.get_height()
     h3 = r3.get_height()
     if (h1!=0.0):
-        plt.text(r1.get_x() + r1.get_width() / 2., h1 / 2., "%d" % h1,
+        plt.text(r1.get_x() + r1.get_width() / 2., h1 / 2., "%.3f" % h1,
                 ha="center", va="center", color="white", fontsize=5, fontweight="bold")
-    plt.text(r2.get_x() + r2.get_width() / 2., h1 + h2 / 2., "%d" % h2,
+    plt.text(r2.get_x() + r2.get_width() / 2., h1 + h2 / 2., "%.3f" % h2,
              ha="center", va="center", color="white", fontsize=5, fontweight="bold")
     if (h3!=0.0):
-        plt.text(r3.get_x() + r3.get_width() / 2., h1 + h2 + h3 / 2., "%d" %
+        plt.text(r3.get_x() + r3.get_width() / 2., h1 + h2 + h3 / 2., "%.3f" %
                 h3, ha="center", va="center", color="white", fontsize=5, fontweight="bold")
 save_plot_name = json_file_name.split(".")[0].split("/")[-1]
 
