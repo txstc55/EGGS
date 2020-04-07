@@ -48,35 +48,38 @@ double read_option<double>(const char *option, int argc, char **argv, const char
 // ========================================================================================
 // ========================================================================================
 
-
 int main(int argc, char *argv[])
 {
 
-
-    igl::OPTICALData o;
-    o.method = read_option<int>("-m", argc, argv, "0"); // what method to use
-
-    std::cout << "load image\n";
+  igl::OPTICALData o;
+  o.method = read_option<int>("-m", argc, argv, "0"); // what method to use
+  int demo_picture = read_option<int>("-d", argc, argv, "0");
+  std::cout << "load image\n";
+  if (demo_picture == 0)
+  {
     igl::load_image1(o, TUTORIAL_SHARED_PATH "/box.0.bmp");
     igl::load_image2(o, TUTORIAL_SHARED_PATH "/box.1.bmp");
+  }else{
+    igl::load_image1(o, TUTORIAL_SHARED_PATH "/frame10.png");
+    igl::load_image2(o, TUTORIAL_SHARED_PATH "/frame11.png");
+  }
 
+  o.alpha = 1.0;
 
-    o.alpha = 1.0;
-
+  igl::solve_flow(o);
+  for (int i = 0; i < 100; i++)
+  {
+    std::cout << "iteration " << i << "\n";
     igl::solve_flow(o);
-    for (int i = 0; i < 100; i++)
-    {
-        std::cout << "iteration " << i << "\n";
-        igl::solve_flow(o);
-    }
+  }
 
-    std::ofstream u_file;
-    u_file.open("u.txt");
-    u_file << o.u;
-    u_file.close();
+  std::ofstream u_file;
+  u_file.open("u.txt");
+  u_file << o.u;
+  u_file.close();
 
-    std::ofstream v_file;
-    v_file.open("v.txt");
-    v_file << o.v;
-    v_file.close();
+  std::ofstream v_file;
+  v_file.open("v.txt");
+  v_file << o.v;
+  v_file.close();
 }
