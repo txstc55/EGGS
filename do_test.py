@@ -53,7 +53,7 @@ mkl_data["ASSEMBLE"] = 0
 
 
 numeric1_data = {}
-numeric1_data["name"] = "NUMERIC1"
+numeric1_data["name"] = "NUMERIC"
 numeric1_data["COMPUTE"] = 0
 numeric1_data["SOLVE"] = 0
 numeric1_data["ASSEMBLE"] = 0
@@ -269,11 +269,11 @@ elif example == 2:
         if not line.startswith("START"):
             count = count % 4
             if count == 3:
-                numeric2_data["ASSEMBLE"] += float(line.split(": ")[1])
+                numeric1_data["ASSEMBLE"] += float(line.split(": ")[1])
             elif count == 0:
-                numeric2_data["COMPUTE"] += float(line.split(": ")[1])
+                numeric1_data["COMPUTE"] += float(line.split(": ")[1])
             else:
-                numeric2_data["SOLVE"] += float(line.split(": ")[1])
+                numeric1_data["SOLVE"] += float(line.split(": ")[1])
             count += 1
 
     if output == "":
