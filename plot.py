@@ -31,9 +31,9 @@ N = len(results)
 ind = np.arange(N)    # the x locations for the groups
 width = 0.35       # the width of the bars: can also be len(x) sequence
 
-p1 = plt.bar(ind, solve, width)
-p2 = plt.bar(ind, compute, width, bottom=solve)
-p3 = plt.bar(ind, assemble, width, bottom=bars)
+p1 = plt.bar(ind, solve, width, color = "#08d9d6")
+p2 = plt.bar(ind, compute, width, bottom=solve, color = "#ff2e63")
+p3 = plt.bar(ind, assemble, width, bottom=bars, color = "#252a34")
 
 plt.ylabel('Time in Microseconds')
 plt.title('Time Result For Each Method')
@@ -55,7 +55,18 @@ for r1, r2, r3 in zip(p1, p2, p3):
              h3, ha="center", va="center", color="white", fontsize=5, fontweight="bold")
 save_plot_name = json_file_name.split(".")[0].split("/")[-1]
 
-plt.savefig("test_result_graphs/"+save_plot_name+".png", dpi=200)
+
+# plt.gca().set_axis_off()
+plt.subplots_adjust(top=1, bottom=0, right=1, left=0,
+                    hspace=0, wspace=0)
+plt.margins(0, 0)
+# plt.gca().xaxis.set_major_locator(plt.NullLocator())
+# plt.gca().yaxis.set_major_locator(plt.NullLocator())
+plt.savefig("test_result_graphs/"+save_plot_name+".pdf", bbox_inches='tight',
+            pad_inches=0, dpi=200)
+
+
+# plt.savefig("test_result_graphs/"+save_plot_name+".png", dpi=200)
 
 
 print(results)
