@@ -39,5 +39,6 @@ add_subdirectory("709_SLIM")
 add_subdirectory("205_Laplacian")
 add_subdirectory("801_OpticalFlow")
 add_subdirectory("802_CotMatrix")
+add_subdirectory("803_Numeric")
 
 
