@@ -2,7 +2,7 @@ import os
 import argparse
 import json
 
-matrix_sizes = [10, 100, 1000, 10000, 100000, 1000000]
+matrix_sizes = [100, 1000, 10000, 100000, 1000000]
 
 if not os.path.isdir("build"):
     print("Creating build folder now")
