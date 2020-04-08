@@ -11,3 +11,5 @@ python do_test.py --e 2 --d 1 --o optical_flow_large_example
 python do_test.py --e 3 --o cot_matrix_armadillo 
 python do_test.py --e 3 --o cot_matrix_armadillo_170k --f armadillo_170k.obj 
 python do_test.py --e 3 --o cot_matrix_37385_sf --f 37385_sf.obj 
+
+python do_numeric_test.py
