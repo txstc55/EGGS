@@ -2,6 +2,7 @@ import os
 import argparse
 import json
 
+matrix_sizes = [10, 100, 1000, 10000, 100000, 1000000]
 
 if not os.path.isdir("build"):
     print("Creating build folder now")
@@ -13,8 +14,9 @@ else:
 
 os.system("cd build && rm *_result.txt && cd ..")
 
-for i in range(100000, 1100000, 100000):
+for i in matrix_sizes:
     for j in range(5):
+        print("Matrix size "+str(i))
         os.system("cd build && ./tutorial/803_Numeric_bin -d " +
                   str(j) + " -r "+str(i) + " && cd ..")
 
