@@ -13,7 +13,7 @@ else:
 
 os.system("cd build && rm *_result.txt && cd ..")
 
-for i in range(100000, 300000, 100000):
+for i in range(100000, 1100000, 100000):
     for j in range(5):
         os.system("cd build && ./tutorial/803_Numeric_bin -d " +
                   str(j) + " -r "+str(i) + " && cd ..")
