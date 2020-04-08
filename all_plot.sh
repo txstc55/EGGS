@@ -11,3 +11,5 @@ python plot.py result_datas/optical_flow_large_example.json
 python plot.py result_datas/cot_matrix_armadillo.json
 python plot.py result_datas/cot_matrix_armadillo_170k.json
 python plot.py result_datas/cot_matrix_37385_sf.json
+
+python plot_numeric.py
