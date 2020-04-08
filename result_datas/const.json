@@ -1,0 +1,1 @@
+[{"method_name": "MKL MULTI THREAD", "time": [119.24, 464.32, 4386.38, 96309.1, 2136400.0]}, {"method_name": "MKL SINGLE THREAD", "time": [120.94, 740.68, 10230.3, 296212.0, 5541180.0]}, {"method_name": "OURS MULTI THREAD", "time": [532.03, 486.44, 2894.18, 41672.7, 922793.0]}, {"method_name": "OURS SINGLE THREAD", "time": [28.82, 507.22, 9500.79, 175272.0, 3269040.0]}]

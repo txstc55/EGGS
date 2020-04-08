@@ -1,0 +1,1 @@
+[{"method_name": "MKL MULTI THREAD", "time": [15.17, 23.61, 36.78, 598.29, 12002.0]}, {"method_name": "OURS MULTI THREAD", "time": [25.09, 68.38, 201.22, 1153.23, 20125.2]}]
