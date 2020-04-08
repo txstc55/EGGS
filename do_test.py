@@ -228,13 +228,13 @@ elif example == 1:
 
 elif example == 2:
     # do eigen tests
-    os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 0" + " && cd ..")
+    os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 0" + demo_type+" && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_eigen.txt")
     # # do numeric multi tests
     # os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 3" + " && cd ..")
     # os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
-    os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 4" + " && cd ..")
+    os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 4" + demo_type+" && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
     f = open("result_datas/result_opt_eigen.txt")
