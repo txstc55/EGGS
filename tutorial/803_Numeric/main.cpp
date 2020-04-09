@@ -86,10 +86,16 @@ int main(int argc, char *argv[])
         result_file.open("pipe_result.txt", std::ios_base::app);
         SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
         SparseMatrix<double, RowMajor> m2 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        cout << "Matrix generated for this operation\n";
+        igl::Timer numeric_prep;
+        numeric_prep.start();
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
         SparseMatrix<NumericType, RowMajor> result_numeric = m1_numeric * m2_numeric;
         ex = NumericExecutor(result_numeric, 0);
+        numeric_prep.stop();
+        cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(m2.valuePtr(), m2.valuePtr() + m2.nonZeros())};
         vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1, m2};
         PROFILE_MKL_MULTI_PIPE(MATRIX_VECTOR, R1_mkl_t, result_file);
@@ -129,10 +135,16 @@ int main(int argc, char *argv[])
         result_file.open("sypr_result.txt", std::ios_base::app);
         SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
         SparseMatrix<double, RowMajor> m2 = generate_sparse_symmetric_matrix<double, RowMajor>(matrix_size, 1);
+        cout << "Matrix generated for this operation\n";
+        igl::Timer numeric_prep;
+        numeric_prep.start();
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
         SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m2_numeric * m1_numeric).triangularView<Upper>();
         ex = NumericExecutor(result_numeric, 0);
+        numeric_prep.stop();
+        cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(m2.valuePtr(), m2.valuePtr() + m2.nonZeros())};
         vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1, m2};
         PROFILE_MKL_MULTI_SYPR(MATRIX_VECTOR, R1_mkl_t, result_file);
@@ -152,7 +164,7 @@ int main(int argc, char *argv[])
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         Eigen::initParallel();
         int n = Eigen::nbThreads();
-        cout<<"threads: "<<n<<"\n";
+        cout << "threads: " << n << "\n";
         auto elapsed_eigen_multi = benchmarkTimer([&]() {
             for (int i = 0; i < 100; i++)
             {
@@ -172,9 +184,15 @@ int main(int argc, char *argv[])
     {
         result_file.open("syrk_result.txt", std::ios_base::app);
         SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        cout << "Matrix generated for this operation\n";
+        igl::Timer numeric_prep;
+        numeric_prep.start();
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m1_numeric).triangularView<Upper>();
         ex = NumericExecutor(result_numeric, 0);
+        numeric_prep.stop();
+        cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros())};
         vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1};
         PROFILE_MKL_MULTI_SYRK(MATRIX_VECTOR, R1_mkl_t, result_file);
@@ -213,10 +231,16 @@ int main(int argc, char *argv[])
         result_file.open("spmv_result.txt", std::ios_base::app);
         SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
         Matrix<double, Dynamic, Dynamic> DENSE_VECTOR = generate_dense_matrix<double>(matrix_size, 1);
+        cout << "Matrix generated for this operation\n";
+        igl::Timer numeric_prep;
+        numeric_prep.start();
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         Matrix<NumericType, Dynamic, Dynamic> DENSE_VECTOR_numeric = to_dense_numeric(DENSE_VECTOR, 1);
         Matrix<NumericType, Dynamic, Dynamic> result_numeric = m1_numeric * DENSE_VECTOR_numeric;
         ex = NumericExecutor(result_numeric, 0);
+        numeric_prep.stop();
+        cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(DENSE_VECTOR.data(), DENSE_VECTOR.data() + DENSE_VECTOR.rows())};
         Matrix<double, Dynamic, 1> mkl_result;
         mkl_result.resize(matrix_size, 1);
@@ -246,11 +270,17 @@ int main(int argc, char *argv[])
         SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
         SparseMatrix<double, RowMajor> m2 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
         SparseMatrix<double, RowMajor> m3 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        cout << "Matrix generated for this operation\n";
+        igl::Timer numeric_prep;
+        numeric_prep.start();
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
         SparseMatrix<NumericType, RowMajor> m3_numeric = to_sparse_numeric<double, RowMajor>(m3, 2);
         SparseMatrix<NumericType, RowMajor> result_numeric = SparseMatrix<NumericType, RowMajor>((3.78 * m1_numeric + m2_numeric).transpose()) * (6.942 * SparseMatrix<NumericType, RowMajor>(m2_numeric.transpose()) + m3_numeric);
         ex = NumericExecutor(result_numeric, 0);
+        numeric_prep.stop();
+        cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(m2.valuePtr(), m2.valuePtr() + m2.nonZeros()), vector<double>(m3.valuePtr(), m3.valuePtr() + m3.nonZeros())};
         vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1, m2, m3};
         PROFILE_MKL_CONST_OP_MULT(MATRIX_VECTOR, R1_mkl_t, result_file);
