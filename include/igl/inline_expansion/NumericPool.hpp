@@ -1,6 +1,5 @@
 #include "NumericType.hpp"
 #include <vector>
-#include <map>
 #pragma once
 
 namespace ie {
