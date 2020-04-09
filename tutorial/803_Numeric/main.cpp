@@ -151,6 +151,8 @@ int main(int argc, char *argv[])
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         Eigen::initParallel();
+        n = Eigen::nbThreads();
+        cout<<"threads: "<<n<<"\n";
         auto elapsed_eigen_multi = benchmarkTimer([&]() {
             for (int i = 0; i < 100; i++)
             {
