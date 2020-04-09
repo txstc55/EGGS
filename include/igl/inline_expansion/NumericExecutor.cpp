@@ -16,6 +16,7 @@ NumericExecutor::NumericExecutor(Eigen::SparseMatrix<ie::NumericType, Eigen::Row
     // });
     for (int i = 0; i < R.nonZeros(); i++)
     {
+        std::cout<<i<<" out of "<<R.nonZeros()<<"\n";
         R.valuePtr()[i].accept(this->th, i, true);
     }
     // this->choice = choice;
@@ -38,6 +39,7 @@ NumericExecutor::NumericExecutor(Eigen::SparseMatrix<ie::NumericType, Eigen::Col
     // });
     for (int i = 0; i < R.nonZeros(); i++)
     {
+        std::cout<<i<<" out of "<<R.nonZeros()<<"\n";
         R.valuePtr()[i].accept(this->th, i, true);
     }
     // this->choice = choice;
