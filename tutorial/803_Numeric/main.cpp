@@ -99,7 +99,15 @@ int main(int argc, char *argv[])
         PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
         PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
         // extract the result
-        SparseMatrix<double, RowMajor> Eigen_result = m1 * m2;
+        SparseMatrix<double, RowMajor> Eigen_result;
+        auto elapsed_eigen_single = benchmarkTimer([&]() {
+            for (int i = 0; i < 100; i++)
+            {
+                Eigen_result = m1 * m2;
+            }
+        });
+        // cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
+        // result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
         auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
@@ -108,6 +116,76 @@ int main(int argc, char *argv[])
         break;
     }
     case 1:
+    {
+        result_file.open("sypr_result.txt", std::ios_base::app);
+        SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        SparseMatrix<double, RowMajor> m2 = generate_sparse_symmetric_matrix<double, RowMajor>(matrix_size, 1);
+        SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
+        SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
+        SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m2_numeric * m1_numeric).triangularView<Upper>();
+        ex = NumericExecutor(result_numeric, 0);
+        vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(m2.valuePtr(), m2.valuePtr() + m2.nonZeros())};
+        vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1, m2};
+        PROFILE_MKL_MULTI_SYPR(MATRIX_VECTOR, R1_mkl_t, result_file);
+        PROFILE_MKL_SINGLE_SYPR(MATRIX_VECTOR, R2_mkl_t, result_file);
+        numeric_result1.resize(result_numeric.nonZeros());
+        numeric_result2.resize(result_numeric.nonZeros());
+        PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
+        PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
+        SparseMatrix<double, RowMajor> Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m2 * m1;
+        auto R1_info = extract_value<double>(R1_mkl_t);
+        auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
+        cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
+        break;
+    }
+    case 2:
+    {
+        result_file.open("syrk_result.txt", std::ios_base::app);
+        SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
+        SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m1_numeric).triangularView<Upper>();
+        ex = NumericExecutor(result_numeric, 0);
+        vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros())};
+        vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1};
+        PROFILE_MKL_MULTI_SYRK(MATRIX_VECTOR, R1_mkl_t, result_file);
+        PROFILE_MKL_SINGLE_SYRK(MATRIX_VECTOR, R2_mkl_t, result_file);
+        numeric_result1.resize(result_numeric.nonZeros());
+        numeric_result2.resize(result_numeric.nonZeros());
+        PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
+        PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
+        SparseMatrix<double, RowMajor> Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m1;
+        auto R1_info = extract_value<double>(R1_mkl_t);
+        auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
+        cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
+        break;
+    }
+    case 3:
+    {
+        result_file.open("spmv_result.txt", std::ios_base::app);
+        SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        Matrix<double, Dynamic, Dynamic> DENSE_VECTOR = generate_dense_matrix<double>(matrix_size, 1);
+        SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
+        Matrix<NumericType, Dynamic, Dynamic> DENSE_VECTOR_numeric = to_dense_numeric(DENSE_VECTOR, 1);
+        Matrix<NumericType, Dynamic, Dynamic> result_numeric = m1_numeric * DENSE_VECTOR_numeric;
+        ex = NumericExecutor(result_numeric, 0);
+        vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(DENSE_VECTOR.data(), DENSE_VECTOR.data() + DENSE_VECTOR.rows())};
+        Matrix<double, Dynamic, 1> mkl_result;
+        mkl_result.resize(matrix_size, 1);
+        PROFILE_MKL_MULTI_SPMV(m1, DENSE_VECTOR.data(), mkl_result.data(), result_file);
+        numeric_result1.resize(matrix_size);
+        PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
+        MatrixXd numeric_result;
+        numeric_result.resize(matrix_size, 1);
+        numeric_result = Map<MatrixXd>(numeric_result1.data(), matrix_size, 1);
+        Matrix<double, Dynamic, Dynamic> Eigen_result = m1 * DENSE_VECTOR;
+        cout << "MKL ERROR: " << (Eigen_result - mkl_result).norm() << "\n";
+        cout << "NUMERIC ERROR: " << (Eigen_result - numeric_result).norm() << "\n";
+    }
+    case 4:
     {
         result_file.open("const_result.txt", std::ios_base::app);
         SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
@@ -134,76 +212,6 @@ int main(int argc, char *argv[])
         cout << "MKL ERROR: " << (Eigen_result - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result - R_numeric).norm() << "\n";
         break;
-    }
-    case 2:
-    {
-        result_file.open("sypr_result.txt", std::ios_base::app);
-        SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
-        SparseMatrix<double, RowMajor> m2 = generate_sparse_symmetric_matrix<double, RowMajor>(matrix_size, 1);
-        SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
-        SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
-        SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m2_numeric * m1_numeric).triangularView<Upper>();
-        ex = NumericExecutor(result_numeric, 0);
-        vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(m2.valuePtr(), m2.valuePtr() + m2.nonZeros())};
-        vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1, m2};
-        PROFILE_MKL_MULTI_SYPR(MATRIX_VECTOR, R1_mkl_t, result_file);
-        PROFILE_MKL_SINGLE_SYPR(MATRIX_VECTOR, R2_mkl_t, result_file);
-        numeric_result1.resize(result_numeric.nonZeros());
-        numeric_result2.resize(result_numeric.nonZeros());
-        PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
-        PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
-        SparseMatrix<double, RowMajor> Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m2 * m1;
-        auto R1_info = extract_value<double>(R1_mkl_t);
-        auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
-        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
-        cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
-        cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
-        break;
-    }
-    case 3:
-    {
-        result_file.open("syrk_result.txt", std::ios_base::app);
-        SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
-        SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
-        SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m1_numeric).triangularView<Upper>();
-        ex = NumericExecutor(result_numeric, 0);
-        vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros())};
-        vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1};
-        PROFILE_MKL_MULTI_SYRK(MATRIX_VECTOR, R1_mkl_t, result_file);
-        PROFILE_MKL_SINGLE_SYRK(MATRIX_VECTOR, R2_mkl_t, result_file);
-        numeric_result1.resize(result_numeric.nonZeros());
-        numeric_result2.resize(result_numeric.nonZeros());
-        PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
-        PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
-        SparseMatrix<double, RowMajor> Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m1;
-        auto R1_info = extract_value<double>(R1_mkl_t);
-        auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
-        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
-        cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
-        cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
-        break;
-    }
-    case 4:
-    {
-        result_file.open("spmv_result.txt", std::ios_base::app);
-        SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
-        Matrix<double, Dynamic, Dynamic> DENSE_VECTOR = generate_dense_matrix<double>(matrix_size, 1);
-        SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
-        Matrix<NumericType, Dynamic, Dynamic> DENSE_VECTOR_numeric = to_dense_numeric(DENSE_VECTOR, 1);
-        Matrix<NumericType, Dynamic, Dynamic> result_numeric = m1_numeric * DENSE_VECTOR_numeric;
-        ex = NumericExecutor(result_numeric, 0);
-        vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(DENSE_VECTOR.data(), DENSE_VECTOR.data() + DENSE_VECTOR.rows())};
-        Matrix<double, Dynamic, 1> mkl_result;
-        mkl_result.resize(matrix_size, 1);
-        PROFILE_MKL_MULTI_SPMV(m1, DENSE_VECTOR.data(), mkl_result.data(), result_file);
-        numeric_result1.resize(matrix_size);
-        PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
-        MatrixXd numeric_result;
-        numeric_result.resize(matrix_size, 1);
-        numeric_result = Map<MatrixXd>(numeric_result1.data(), matrix_size, 1);
-        Matrix<double, Dynamic, Dynamic> Eigen_result = m1 * DENSE_VECTOR;
-        cout << "MKL ERROR: " << (Eigen_result - mkl_result).norm() << "\n";
-        cout << "NUMERIC ERROR: " << (Eigen_result - numeric_result).norm() << "\n";
     }
     }
     result_file.close();
