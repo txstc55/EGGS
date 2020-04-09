@@ -75,6 +75,7 @@ public:
     NumericType operator+=(const NumericType &v);
     NumericType sqrt() const;
 
+    NumericType operator+(const double v);
     NumericType operator*(const double v);
     NumericType operator/(const double v);
 

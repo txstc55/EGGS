@@ -148,6 +148,17 @@ NumericType NumericType::sqrt() const
     return parent;
 }
 
+NumericType NumericType::operator+(const double v)
+{
+    if (v == 0.0)
+        return (*this);
+    else
+    {
+        NumericType constant = NumericType(v);
+        return ((*this) + constant);
+    }
+}
+
 NumericType NumericType::operator*(const double v)
 {
     if (v == 1.0)
