@@ -43,14 +43,15 @@ NumericType::NumericType(double v)
 {
     this->operation = Constant;
     this->const_value = v;
-    if (pool->const_node_position.find(v) != pool->const_node_position.end())
+    if (NumericType::pool->const_node_position.find(v) != NumericType::pool->const_node_position.end())
     {
         this->self_index = NumericType::pool->tree_node_pool.size();
         NumericType::pool->tree_node_pool.push_back(*this);
+        NumericType::pool->const_node_position.insert({v, this->self_index});
     }
     else
     {
-        this->self_index = pool->const_node_position[v];
+        this->self_index = NumericType::pool->const_node_position[v];
     }
 }
 
