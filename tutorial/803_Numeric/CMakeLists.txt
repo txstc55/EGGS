@@ -7,4 +7,4 @@ set(test_sources
 )
 
 add_executable(${PROJECT_NAME}_bin ${test_sources})
-target_compile_definitions("-fopenmp")
+target_compile_definitions(${PROJECT_NAME}_bin -fopenmp)
