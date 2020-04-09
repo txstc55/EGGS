@@ -28,10 +28,10 @@ demo_type = " -d " + str(demo_type)
 if not os.path.isdir("build"):
     print("Creating build folder now")
     os.system("mkdir build")
-    os.system("cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j && cd ..")
+    os.system("cd build && taskset -c 0-3 cmake .. -DCMAKE_BUILD_TYPE=Release && make -j && cd ..")
 else:
     print("Build exists, rebuilding")
-    os.system("cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j && cd ..")
+    os.system("cd build && taskset -c 0-3 cmake .. -DCMAKE_BUILD_TYPE=Release && make -j && cd ..")
 
 # check if result data folder exists
 if not os.path.isdir("result_datas"):
@@ -66,24 +66,24 @@ numeric2_data["ASSEMBLE"] = 0
 
 if example == 0:
     # do eigen tests
-    os.system("cd build && ./tutorial/709_SLIM_bin -m 0" +
+    os.system("cd build && taskset -c 0-3 ./tutorial/709_SLIM_bin -m 0" +
               demo_type + file + " && cd ..")
     os.system(
         "mv build/result.txt result_datas/result_eigen.txt && mv build/slim.obj result_datas/slim_eigen.obj")
 
     # do mkl tests
-    os.system("cd build && ./tutorial/709_SLIM_bin -m 2" +
+    os.system("cd build && taskset -c 0-3 ./tutorial/709_SLIM_bin -m 2" +
               demo_type + file + " && cd ..")
     os.system(
         "mv build/result.txt result_datas/result_mkl.txt && mv build/slim.obj result_datas/slim_mkl.obj")
 
     # do numeric 1 tests
-    os.system("cd build && ./tutorial/709_SLIM_bin -m 3" +
+    os.system("cd build && taskset -c 0-3 ./tutorial/709_SLIM_bin -m 3" +
               demo_type + file + " && cd ..")
     os.system("mv build/result.txt result_datas/result_numeric1.txt && mv build/slim.obj result_datas/slim_numeric1.obj")
 
     # # do numeric 2 tests
-    # os.system("cd build && ./tutorial/709_SLIM_bin -m 4" +
+    # os.system("cd build && taskset -c 0-3 ./tutorial/709_SLIM_bin -m 4" +
     #           demo_type + file + " && cd ..")
     # os.system("mv build/result.txt result_datas/result_numeric2.txt && mv build/slim.obj result_datas/slim_numeric2.obj")
 
@@ -149,21 +149,21 @@ if example == 0:
 
 elif example == 1:
     # do eigen tests
-    os.system("cd build && ./tutorial/205_Laplacian_bin -w " +
+    os.system("cd build && taskset -c 0-3 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 0" + file + " && cd ..")
     os.system("mv build/result_cot.txt result_datas/result_cot_eigen.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_eigen.obj")
 
     # do mkl tests
-    os.system("cd build && ./tutorial/205_Laplacian_bin -w " +
+    os.system("cd build && taskset -c 0-3 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 2" + file + " && cd ..")
     os.system("mv build/result_cot.txt result_datas/result_cot_mkl.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_mkl.obj")
     # do numeric 1 tests
-    os.system("cd build && ./tutorial/205_Laplacian_bin -w " +
+    os.system("cd build && taskset -c 0-3 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 3" + file + " && cd ..")
     os.system("mv build/result_cot.txt result_datas/result_cot_numeric1.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_numeric1.obj")
 
     # # do numeric 2 tests
-    # os.system("cd build && ./tutorial/205_Laplacian_bin -w " +
+    # os.system("cd build && taskset -c 0-3 ./tutorial/205_Laplacian_bin -w " +
     #           weight+" -m 4" + file + " && cd ..")
     # os.system("mv build/result_cot.txt result_datas/result_cot_numeric2.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_numeric2.obj")
 
@@ -228,13 +228,13 @@ elif example == 1:
 
 elif example == 2:
     # do eigen tests
-    os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 0" + demo_type+" && cd ..")
+    os.system("cd build && taskset -c 0-3 ./tutorial/801_OpticalFlow_bin -m 0" + demo_type+" && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_eigen.txt")
     # # do numeric multi tests
-    # os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 3" + " && cd ..")
+    # os.system("cd build && taskset -c 0-3 ./tutorial/801_OpticalFlow_bin -m 3" + " && cd ..")
     # os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
-    os.system("cd build && ./tutorial/801_OpticalFlow_bin -m 4" + demo_type+" && cd ..")
+    os.system("cd build && taskset -c 0-3 ./tutorial/801_OpticalFlow_bin -m 4" + demo_type+" && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
     f = open("result_datas/result_opt_eigen.txt")
@@ -284,7 +284,7 @@ elif example == 2:
             json.dump([eigen_data, numeric1_data], j)
 
 elif example == 3:
-    os.system("cd build && ./tutorial/802_CotMatrix_bin"+file+" && cd ..")
+    os.system("cd build && taskset -c 0-3 ./tutorial/802_CotMatrix_bin"+file+" && cd ..")
     os.system("mv build/result_cot_matrix.txt result_datas/result_cot_matrix.txt")
 
     f = open("result_datas/result_cot_matrix.txt")
