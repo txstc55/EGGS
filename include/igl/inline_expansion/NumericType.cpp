@@ -78,10 +78,10 @@ void NumericType::accept(NumericVisitor &nv, size_t data_position, const bool to
 // left is this and right is v, always
 NumericType NumericType::operator+(const NumericType &v) const
 {
-    if (this->operation == Constant && this->const_value == 0)
-        return v;
-    if (v.operation == Constant && v.const_value == 0)
-        return (*this);
+    // if (this->operation == Constant && this->const_value == 0)
+    //     return v;
+    // if (v.operation == Constant && v.const_value == 0)
+    //     return (*this);
     NumericType parent = NumericType();
     parent.self_index = NumericType::pool->tree_node_pool.size();
     parent.left_index = this->self_index;
@@ -93,8 +93,8 @@ NumericType NumericType::operator+(const NumericType &v) const
 
 NumericType NumericType::operator-(const NumericType &v) const
 {
-    if (v.operation == Constant && v.const_value == 0)
-        return (*this);
+    // if (v.operation == Constant && v.const_value == 0)
+    //     return (*this);
     NumericType parent = NumericType();
     parent.self_index = NumericType::pool->tree_node_pool.size();
     parent.left_index = this->self_index;
@@ -106,10 +106,10 @@ NumericType NumericType::operator-(const NumericType &v) const
 
 NumericType NumericType::operator*(const NumericType &v) const
 {
-    if (this->operation == Constant && this->const_value == 1)
-        return v;
-    if (v.operation == Constant && v.const_value == 1)
-        return (*this);
+    // if (this->operation == Constant && this->const_value == 1)
+    //     return v;
+    // if (v.operation == Constant && v.const_value == 1)
+    //     return (*this);
     NumericType parent = NumericType();
     parent.self_index = NumericType::pool->tree_node_pool.size();
     parent.left_index = this->self_index;
@@ -121,8 +121,8 @@ NumericType NumericType::operator*(const NumericType &v) const
 
 NumericType NumericType::operator/(const NumericType &v) const
 {
-    if (v.operation == Constant && v.const_value == 1)
-        return (*this);
+    // if (v.operation == Constant && v.const_value == 1)
+    //     return (*this);
     NumericType parent = NumericType();
     parent.self_index = NumericType::pool->tree_node_pool.size();
     parent.left_index = this->self_index;
