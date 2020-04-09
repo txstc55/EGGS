@@ -33,6 +33,7 @@ for k in range(len(file_list_full)):
                      label="Single Thread Speedup", color="#55E6C1")
         
         plt.legend()
+        plt.yticks(list(range(0, 13)))
         # plt.subplots_adjust(top=1, bottom=0, right=1, left=0,
         #                     hspace=0, wspace=0)
         ax = plt.axes()
