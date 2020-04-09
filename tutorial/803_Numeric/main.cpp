@@ -236,6 +236,7 @@ int main(int argc, char *argv[])
         result_file << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
         cout << "MKL ERROR: " << (Eigen_result - mkl_result).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result - numeric_result).norm() << "\n";
+        break;
     }
     case 4:
     {
