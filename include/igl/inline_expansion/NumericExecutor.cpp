@@ -54,6 +54,7 @@ NumericExecutor::NumericExecutor(Eigen::SparseMatrix<ie::NumericType, Eigen::Col
 
 NumericExecutor::NumericExecutor(Eigen::Matrix<ie::NumericType, Eigen::Dynamic, Eigen::Dynamic> &R, size_t gap)
 {
+    cout<<"starting executor\n";
     int matrix_size = R.rows() * R.cols();
     this->gap = gap;
     this->th = NumericVisitorTreeHashing(matrix_size);
@@ -64,6 +65,7 @@ NumericExecutor::NumericExecutor(Eigen::Matrix<ie::NumericType, Eigen::Dynamic, 
     {
         R(i % R.rows(), i / R.rows()).accept(this->th, i, true);
     }
+    cout<<"finished loop\n";
     cout << "Group by tree type method chosen\n";
     this->tg = TreeToFileVisitorGroupByFunction(gap);
     this->th.accept(this->tg);
