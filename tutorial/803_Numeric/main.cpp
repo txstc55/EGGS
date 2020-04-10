@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
         auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
-        } catch (auto e){
+        } catch (const std::exception&){
             std::cout<<"Pool size: "<<NumericType::pool->tree_node_pool.size()<<" capacity: "<<NumericType::pool->tree_node_pool.capacity()<<"\n";
         }
         break;
