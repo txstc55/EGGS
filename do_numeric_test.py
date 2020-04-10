@@ -28,7 +28,7 @@ os.system("cd build && rm *_result.txt && cd ..")
 for i in matrix_sizes:
     for j in range(3):
         print("Matrix size "+str(i))
-        os.system("cd build && taskset -c 0-3 ./tutorial/803_Numeric_bin -d " +
+        os.system("cd build && taskset -c 0-7 ./tutorial/803_Numeric_bin -d " +
                   str(j) + " -r "+str(i) + " && cd ..")
 os.system("mv build/*_result.txt result_datas/")
 
@@ -73,7 +73,7 @@ os.system("cd build && rm *_result.txt && cd ..")
 for i in matrix_sizes:
     for j in range(3):
         print("Matrix size "+str(i))
-        os.system("cd build && taskset -c 0-3 ./tutorial/803_Numeric_bin -d " +
+        os.system("cd build && taskset -c 0-7 ./tutorial/803_Numeric_bin -d " +
                   str(j) + " -r "+str(i) + " -e 15" + " && cd ..")
 os.system("mv build/*_result.txt result_datas/")
 
@@ -84,7 +84,7 @@ write_json("result_datas/syrk_result.txt", "result_datas/syrk_15.json")
 os.system("cd build && rm *_result.txt && cd ..")
 for i in ["0", "0-1", "0-3", "0-7", "0-15"]:
     os.system("cd build && taskset -c "+i +
-              " ./tutorial/803_Numeric_bin -d 1 -r 500000 -e 15 && cd ..")
+              " ./tutorial/803_Numeric_bin -d 1 -r 1000000 -e 5 && cd ..")
 os.system("mv build/*_result.txt result_datas/")
 write_json("result_datas/sypr_result.txt", "result_datas/sypr_thread_diff.json")
 
