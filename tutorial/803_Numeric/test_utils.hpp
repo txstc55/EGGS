@@ -363,6 +363,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         std::cout << "MKL_SINGLE SYRK: " << elapsed << " us\n";                                                                                                      \
         result_file << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                    \
         R = mkl_result;                                                                                                                                              \
+        mkl_free_buffers();                                                                                                                                          \
     } while (0)
 
 #define PROFILE_MKL_MULTI_SYRK(MATRIX_VECTOR, R, result_file)                                                                                                        \
@@ -395,6 +396,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         std::cout << "MKL_MULTI SYRK: " << elapsed << " us\n";                                                                                                       \
         result_file << "MKL_MULTI SYRK: " << elapsed << " us\n";                                                                                                     \
         R = mkl_result;                                                                                                                                              \
+        mkl_free_buffers();                                                                                                                                          \
     } while (0)
 
 #define PROFILE_MKL_MULTI_SPMV(MATRIX, x, y, result_file)                                              \
