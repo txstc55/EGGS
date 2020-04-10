@@ -37,6 +37,8 @@ NumericType::NumericType(size_t m_id, size_t d_id)
     this->operation = Leaf;
     this->self_index = NumericType::pool->tree_node_pool.size();
     NumericType::pool->tree_node_pool.push_back(*this);
+    if (NumericType::pool->tree_node_pool.capacity() == NumericType::pool->tree_node_pool.size() + 2)
+        NumericType::pool->tree_node_pool.reserve(NumericType::pool->tree_node_pool.size() * 1.1);
 }
 
 NumericType::NumericType(double v)
@@ -45,6 +47,8 @@ NumericType::NumericType(double v)
     this->const_value = v;
     this->self_index = NumericType::pool->tree_node_pool.size();
     NumericType::pool->tree_node_pool.push_back(*this);
+    if (NumericType::pool->tree_node_pool.capacity() == NumericType::pool->tree_node_pool.size() + 2)
+        NumericType::pool->tree_node_pool.reserve(NumericType::pool->tree_node_pool.size() * 1.1);
 }
 
 NumericType::NumericType(const NumericType &n)
