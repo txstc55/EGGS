@@ -220,6 +220,7 @@ int main(int argc, char *argv[])
         numeric_result1.resize(matrix_size);
         PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
         MatrixXd numeric_result;
+        SparseMatrix<double, RowMajor> Eigen_result;
         auto elapsed_eigen_single = benchmarkTimer([&]() {
             for (int i = 0; i < 100; i++)
             {
