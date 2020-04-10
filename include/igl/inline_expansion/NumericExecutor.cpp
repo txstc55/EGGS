@@ -63,6 +63,7 @@ NumericExecutor::NumericExecutor(Eigen::Matrix<ie::NumericType, Eigen::Dynamic, 
     // });
     for (int i = 0; i < matrix_size; i++)
     {
+        cout<<i<<" out of "<<matrix_size<<"\n";
         R(i % R.rows(), i / R.rows()).accept(this->th, i, true);
     }
     cout<<"finished loop\n";
