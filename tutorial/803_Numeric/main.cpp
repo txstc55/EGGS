@@ -131,7 +131,9 @@ int main(int argc, char *argv[])
         numeric_prep.start();
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
+        try {
         SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m2_numeric * m1_numeric).triangularView<Upper>();
+        
         ex = NumericExecutor(result_numeric, 0);
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
@@ -158,6 +160,9 @@ int main(int argc, char *argv[])
         auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
+        } catch (auto e){
+            std::cout<<"Pool size: "<<NumericType::pool->tree_node_pool.size()<<" capacity: "<<NumericType::pool->tree_node_pool.capacity()<<"\n";
+        }
         break;
     }
     case 2:
