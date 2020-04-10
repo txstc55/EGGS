@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
         SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
         SparseMatrix<NumericType, RowMajor> result_numeric = m1_numeric * m2_numeric;
         ex = NumericExecutor(result_numeric, 0);
+        NumericType::pool->clear_pool();
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
@@ -131,10 +132,9 @@ int main(int argc, char *argv[])
         numeric_prep.start();
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
-        try {
         SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m2_numeric * m1_numeric).triangularView<Upper>();
-        
         ex = NumericExecutor(result_numeric, 0);
+        NumericType::pool->clear_pool();
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
@@ -160,9 +160,6 @@ int main(int argc, char *argv[])
         auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
-        } catch (const std::exception&){
-            std::cout<<"Pool size: "<<NumericType::pool->tree_node_pool.size()<<" capacity: "<<NumericType::pool->tree_node_pool.capacity()<<"\n";
-        }
         break;
     }
     case 2:
@@ -175,6 +172,7 @@ int main(int argc, char *argv[])
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m1_numeric).triangularView<Upper>();
         ex = NumericExecutor(result_numeric, 0);
+        NumericType::pool->clear_pool();
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
@@ -214,6 +212,7 @@ int main(int argc, char *argv[])
         Matrix<NumericType, Dynamic, Dynamic> DENSE_VECTOR_numeric = to_dense_numeric(DENSE_VECTOR, 1);
         Matrix<NumericType, Dynamic, Dynamic> result_numeric = m1_numeric * DENSE_VECTOR_numeric;
         ex = NumericExecutor(result_numeric, 0);
+        NumericType::pool->clear_pool();
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
@@ -253,6 +252,7 @@ int main(int argc, char *argv[])
         SparseMatrix<NumericType, RowMajor> m3_numeric = to_sparse_numeric<double, RowMajor>(m3, 2);
         SparseMatrix<NumericType, RowMajor> result_numeric = SparseMatrix<NumericType, RowMajor>((3.78 * m1_numeric + m2_numeric).transpose()) * (6.942 * SparseMatrix<NumericType, RowMajor>(m2_numeric.transpose()) + m3_numeric);
         ex = NumericExecutor(result_numeric, 0);
+        NumericType::pool->clear_pool();
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
         result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
