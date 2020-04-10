@@ -88,7 +88,7 @@ NumericType NumericType::operator+(const NumericType &v) const
     parent.right_index = v.self_index;
     parent.operation = Add;
     NumericType::pool->tree_node_pool.push_back(parent);
-    cout<<"Pushed to "<<parent.self_index<<"\n";
+    cout<<"Pushed to "<<parent.self_index<<" "<<sizeof(parent)<<"\n";
     return parent;
 }
 
@@ -117,7 +117,7 @@ NumericType NumericType::operator*(const NumericType &v) const
     parent.right_index = v.self_index;
     parent.operation = Multiply;
     NumericType::pool->tree_node_pool.push_back(parent);
-    cout<<"Pushed to "<<parent.self_index<<"\n";
+    cout<<"Pushed to "<<parent.self_index<<" "<<sizeof(parent)<<"\n";
     return parent;
 }
 
