@@ -21,16 +21,16 @@ inline double benchmarkTimer(std::function<void()> op)
     return t.getElapsedTimeInMicroSec() / 25.0;
 }
 
-#define PROFILE(CODE, MSG)                                                           \
-    do                                                                               \
-    {                                                                                \
-        igl::Timer t;                                                                \
-        t.start();                                                                   \
+#define PROFILE(CODE, MSG)                                                          \
+    do                                                                              \
+    {                                                                               \
+        igl::Timer t;                                                               \
+        t.start();                                                                  \
         for (int i = 0; i < 25; i++)                                                \
-        {                                                                            \
-            (CODE);                                                                  \
-        }                                                                            \
-        t.stop();                                                                    \
+        {                                                                           \
+            (CODE);                                                                 \
+        }                                                                           \
+        t.stop();                                                                   \
         std::cout << MSG << ": " << t.getElapsedTimeInMicroSec() / 25.0 << " us\n"; \
     } while (0)
 
@@ -61,7 +61,7 @@ static Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> ConstructDenseMatri
     do                                                                                           \
     {                                                                                            \
         auto elapsed_executor_single = benchmarkTimer([&]() {                                    \
-            for (int i = 0; i < 25; i++)                                                        \
+            for (int i = 0; i < 25; i++)                                                         \
             {                                                                                    \
                 S.ExecuteSingle(DATA, r_vector);                                                 \
             }                                                                                    \
@@ -75,7 +75,7 @@ static Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> ConstructDenseMatri
     do                                                                                         \
     {                                                                                          \
         auto elapsed_executor_multi = benchmarkTimer([&]() {                                   \
-            for (int i = 0; i < 25; i++)                                                      \
+            for (int i = 0; i < 25; i++)                                                       \
             {                                                                                  \
                 S.ExecuteMulti(DATA, r_vector);                                                \
             }                                                                                  \
@@ -133,7 +133,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         }                                                                                                                                                                                                                               \
         mkl_set_num_threads_local(1);                                                                                                                                                                                                   \
         auto elapsed = benchmarkTimer([&]() {                                                                                                                                                                                           \
-            for (int j = 0; j < 25; j++)                                                                                                                                                                                               \
+            for (int j = 0; j < 25; j++)                                                                                                                                                                                                \
             {                                                                                                                                                                                                                           \
                 status = mkl_sparse_sp2m(SPARSE_OPERATION_NON_TRANSPOSE, general_type, matrix_vectors[0], SPARSE_OPERATION_NON_TRANSPOSE, general_type, matrix_vectors[1], SPARSE_STAGE_FINALIZE_MULT, &result_vectors[0]);             \
                 for (unsigned int i = 2; i < MATRIX_VECTOR.size(); i++)                                                                                                                                                                 \
@@ -176,7 +176,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         }                                                                                                                                                                                                                               \
         mkl_set_num_threads_local(0);                                                                                                                                                                                                   \
         auto elapsed = benchmarkTimer([&]() {                                                                                                                                                                                           \
-            for (int j = 0; j < 25; j++)                                                                                                                                                                                               \
+            for (int j = 0; j < 25; j++)                                                                                                                                                                                                \
             {                                                                                                                                                                                                                           \
                 status = mkl_sparse_sp2m(SPARSE_OPERATION_NON_TRANSPOSE, general_type, matrix_vectors[0], SPARSE_OPERATION_NON_TRANSPOSE, general_type, matrix_vectors[1], SPARSE_STAGE_FINALIZE_MULT, &result_vectors[0]);             \
                 for (unsigned int i = 2; i < MATRIX_VECTOR.size(); i++)                                                                                                                                                                 \
@@ -208,7 +208,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         }                                                                                                                                                                                                               \
         mkl_set_num_threads_local(1);                                                                                                                                                                                   \
         auto elapsed_add = benchmarkTimer([&]() {                                                                                                                                                                       \
-            for (int j = 0; j < 25; j++)                                                                                                                                                                               \
+            for (int j = 0; j < 25; j++)                                                                                                                                                                                \
             {                                                                                                                                                                                                           \
                 status = mkl_sparse_d_add(SPARSE_OPERATION_NON_TRANSPOSE, matrix_vectors[0], 3.78, matrix_vectors[1], &result_vectors[0]);                                                                              \
                 status = mkl_sparse_d_add(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[1], 6.942, matrix_vectors[2], &result_vectors[1]);                                                                                 \
@@ -217,7 +217,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         status = mkl_sparse_sp2m(SPARSE_OPERATION_TRANSPOSE, general_type, result_vectors[0], SPARSE_OPERATION_NON_TRANSPOSE, general_type, result_vectors[1], SPARSE_STAGE_NNZ_COUNT, &result_vectors[2]);             \
         status = mkl_sparse_sp2m(SPARSE_OPERATION_TRANSPOSE, general_type, result_vectors[0], SPARSE_OPERATION_NON_TRANSPOSE, general_type, result_vectors[1], SPARSE_STAGE_FINALIZE_MULT_NO_VAL, &result_vectors[2]);  \
         auto elapsed_mult = benchmarkTimer([&]() {                                                                                                                                                                      \
-            for (int j = 0; j < 25; j++)                                                                                                                                                                               \
+            for (int j = 0; j < 25; j++)                                                                                                                                                                                \
             {                                                                                                                                                                                                           \
                 status = mkl_sparse_sp2m(SPARSE_OPERATION_TRANSPOSE, general_type, result_vectors[0], SPARSE_OPERATION_NON_TRANSPOSE, general_type, result_vectors[1], SPARSE_STAGE_FINALIZE_MULT, &result_vectors[2]); \
             }                                                                                                                                                                                                           \
@@ -249,7 +249,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         }                                                                                                                                                                                                               \
         mkl_set_num_threads_local(0);                                                                                                                                                                                   \
         auto elapsed_add = benchmarkTimer([&]() {                                                                                                                                                                       \
-            for (int j = 0; j < 25; j++)                                                                                                                                                                               \
+            for (int j = 0; j < 25; j++)                                                                                                                                                                                \
             {                                                                                                                                                                                                           \
                 status = mkl_sparse_d_add(SPARSE_OPERATION_NON_TRANSPOSE, matrix_vectors[0], 3.78, matrix_vectors[1], &result_vectors[0]);                                                                              \
                 status = mkl_sparse_d_add(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[1], 6.942, matrix_vectors[2], &result_vectors[1]);                                                                                 \
@@ -258,7 +258,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         status = mkl_sparse_sp2m(SPARSE_OPERATION_TRANSPOSE, general_type, result_vectors[0], SPARSE_OPERATION_NON_TRANSPOSE, general_type, result_vectors[1], SPARSE_STAGE_NNZ_COUNT, &result_vectors[2]);             \
         status = mkl_sparse_sp2m(SPARSE_OPERATION_TRANSPOSE, general_type, result_vectors[0], SPARSE_OPERATION_NON_TRANSPOSE, general_type, result_vectors[1], SPARSE_STAGE_FINALIZE_MULT_NO_VAL, &result_vectors[2]);  \
         auto elapsed_mult = benchmarkTimer([&]() {                                                                                                                                                                      \
-            for (int j = 0; j < 25; j++)                                                                                                                                                                               \
+            for (int j = 0; j < 25; j++)                                                                                                                                                                                \
             {                                                                                                                                                                                                           \
                 status = mkl_sparse_sp2m(SPARSE_OPERATION_TRANSPOSE, general_type, result_vectors[0], SPARSE_OPERATION_NON_TRANSPOSE, general_type, result_vectors[1], SPARSE_STAGE_FINALIZE_MULT, &result_vectors[2]); \
             }                                                                                                                                                                                                           \
@@ -290,7 +290,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
         mkl_set_num_threads_local(1);                                                                                                                                \
         auto elapsed = benchmarkTimer([&]() {                                                                                                                        \
-            for (int j = 0; j < 25; j++)                                                                                                                            \
+            for (int j = 0; j < 25; j++)                                                                                                                             \
             {                                                                                                                                                        \
                 status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT); \
             }                                                                                                                                                        \
@@ -322,7 +322,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
         mkl_set_num_threads_local(0);                                                                                                                                \
         auto elapsed = benchmarkTimer([&]() {                                                                                                                        \
-            for (int j = 0; j < 25; j++)                                                                                                                            \
+            for (int j = 0; j < 25; j++)                                                                                                                             \
             {                                                                                                                                                        \
                 status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT); \
             }                                                                                                                                                        \
@@ -355,7 +355,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
         mkl_set_num_threads_local(1);                                                                                                                                \
         auto elapsed = benchmarkTimer([&]() {                                                                                                                        \
-            for (int j = 0; j < 25; j++)                                                                                                                            \
+            for (int j = 0; j < 25; j++)                                                                                                                             \
             {                                                                                                                                                        \
                 status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT); \
             }                                                                                                                                                        \
@@ -387,7 +387,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
         mkl_set_num_threads_local(0);                                                                                                                                \
         auto elapsed = benchmarkTimer([&]() {                                                                                                                        \
-            for (int j = 0; j < 25; j++)                                                                                                                            \
+            for (int j = 0; j < 25; j++)                                                                                                                             \
             {                                                                                                                                                        \
                 status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT); \
             }                                                                                                                                                        \
@@ -407,7 +407,7 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         create_mkl_csr_matrix(MATRIX, &A);                                                             \
         mkl_set_num_threads_local(0);                                                                  \
         auto elapsed = benchmarkTimer([&]() {                                                          \
-            for (int j = 0; j < 25; j++)                                                              \
+            for (int j = 0; j < 25; j++)                                                               \
             {                                                                                          \
                 status = mkl_sparse_d_mv(SPARSE_OPERATION_NON_TRANSPOSE, 1, A, general_type, x, 0, y); \
             }                                                                                          \
