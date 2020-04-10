@@ -114,15 +114,6 @@ int main(int argc, char *argv[])
         });
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
-        Eigen::initParallel();
-        auto elapsed_eigen_multi = benchmarkTimer([&]() {
-            for (int i = 0; i < 100; i++)
-            {
-                Eigen_result = m1 * m2;
-            }
-        });
-        cout << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
-        result_file << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
         auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
@@ -162,17 +153,6 @@ int main(int argc, char *argv[])
         });
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
-        Eigen::initParallel();
-        int n = Eigen::nbThreads();
-        cout << "threads: " << n << "\n";
-        auto elapsed_eigen_multi = benchmarkTimer([&]() {
-            for (int i = 0; i < 100; i++)
-            {
-                Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m2 * m1;
-            }
-        });
-        cout << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
-        result_file << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
         auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
@@ -210,15 +190,6 @@ int main(int argc, char *argv[])
         });
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
-        Eigen::initParallel();
-        auto elapsed_eigen_multi = benchmarkTimer([&]() {
-            for (int i = 0; i < 100; i++)
-            {
-                Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m1;
-            }
-        });
-        cout << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
-        result_file << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
         auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
@@ -236,8 +207,7 @@ int main(int argc, char *argv[])
         numeric_prep.start();
         SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
         Matrix<NumericType, Dynamic, Dynamic> DENSE_VECTOR_numeric = to_dense_numeric(DENSE_VECTOR, 1);
-        cout<<"Converting finished\n";
-        Matrix<NumericType, Dynamic, Dynamic> result_numeric = m1_numeric * DENSE_VECTOR_numeric;
+        cout << "Converting finished\n" Matrix<NumericType, Dynamic, Dynamic> result_numeric = m1_numeric * DENSE_VECTOR_numeric;
         ex = NumericExecutor(result_numeric, 0);
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
@@ -249,18 +219,17 @@ int main(int argc, char *argv[])
         numeric_result1.resize(matrix_size);
         PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
         MatrixXd numeric_result;
+        auto elapsed_eigen_single = benchmarkTimer([&]() {
+            for (int i = 0; i < 100; i++)
+            {
+                Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m1;
+            }
+        });
+        cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
+        result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         numeric_result.resize(matrix_size, 1);
         numeric_result = Map<MatrixXd>(numeric_result1.data(), matrix_size, 1);
         Matrix<double, Dynamic, Dynamic> Eigen_result;
-        Eigen::initParallel();
-        auto elapsed_eigen_multi = benchmarkTimer([&]() {
-            for (int i = 0; i < 100; i++)
-            {
-                Eigen_result = m1 * DENSE_VECTOR;
-            }
-        });
-        cout << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
-        result_file << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
         cout << "MKL ERROR: " << (Eigen_result - mkl_result).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result - numeric_result).norm() << "\n";
         break;
@@ -300,15 +269,6 @@ int main(int argc, char *argv[])
         });
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
-        Eigen::initParallel();
-        auto elapsed_eigen_multi = benchmarkTimer([&]() {
-            for (int i = 0; i < 100; i++)
-            {
-                Eigen_result = SparseMatrix<double, RowMajor>((3.78 * m1 + m2).transpose()) * (6.942 * SparseMatrix<double, RowMajor>(m2.transpose()) + m3);
-            }
-        });
-        cout << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
-        result_file << "EIGEN MULTI THREAD: " << elapsed_eigen_multi << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
         auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
