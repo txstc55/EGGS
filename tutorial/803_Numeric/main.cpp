@@ -94,7 +94,6 @@ int main(int argc, char *argv[])
         SparseMatrix<NumericType, RowMajor> result_numeric = m1_numeric * m2_numeric;
         ex = NumericExecutor(result_numeric, 0);
         NumericType::pool->clear_pool();
-        result_numeric.resize(0, 0);
         m1_numeric.resize(0, 0);
         m2_numeric.resize(0, 0);
         numeric_prep.stop();
@@ -138,7 +137,6 @@ int main(int argc, char *argv[])
         SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m2_numeric * m1_numeric).triangularView<Upper>();
         ex = NumericExecutor(result_numeric, 0);
         NumericType::pool->clear_pool();
-        result_numeric.resize(0, 0);
         m1_numeric.resize(0, 0);
         m2_numeric.resize(0, 0);
         numeric_prep.stop();
@@ -179,7 +177,6 @@ int main(int argc, char *argv[])
         SparseMatrix<NumericType, RowMajor> result_numeric = (SparseMatrix<NumericType, RowMajor>(m1_numeric.transpose()) * m1_numeric).triangularView<Upper>();
         ex = NumericExecutor(result_numeric, 0);
         NumericType::pool->clear_pool();
-        result_numeric.resize(0, 0);
         m1_numeric.resize(0, 0);
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
@@ -221,7 +218,6 @@ int main(int argc, char *argv[])
         Matrix<NumericType, Dynamic, Dynamic> result_numeric = m1_numeric * DENSE_VECTOR_numeric;
         ex = NumericExecutor(result_numeric, 0);
         NumericType::pool->clear_pool();
-        result_numeric.resize(0, 0);
         DENSE_VECTOR_numeric.resize(0, 0);
         numeric_prep.stop();
         cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
@@ -263,7 +259,6 @@ int main(int argc, char *argv[])
         SparseMatrix<NumericType, RowMajor> result_numeric = SparseMatrix<NumericType, RowMajor>((3.78 * m1_numeric + m2_numeric).transpose()) * (6.942 * SparseMatrix<NumericType, RowMajor>(m2_numeric.transpose()) + m3_numeric);
         ex = NumericExecutor(result_numeric, 0);
         NumericType::pool->clear_pool();
-        result_numeric.resize(0, 0);
         m1_numeric.resize(0, 0);
         m2_numeric.resize(0, 0);
         m3_numeric.resize(0, 0);
