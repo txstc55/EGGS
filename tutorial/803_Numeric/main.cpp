@@ -231,7 +231,6 @@ int main(int argc, char *argv[])
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         numeric_result.resize(matrix_size, 1);
         numeric_result = Map<MatrixXd>(numeric_result1.data(), matrix_size, 1);
-        Matrix<double, Dynamic, Dynamic> Eigen_result;
         cout << "MKL ERROR: " << (Eigen_result - mkl_result).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result - numeric_result).norm() << "\n";
         break;
