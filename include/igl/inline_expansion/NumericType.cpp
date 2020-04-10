@@ -88,7 +88,8 @@ NumericType NumericType::operator+(const NumericType &v) const
     parent.right_index = v.self_index;
     parent.operation = Add;
     NumericType::pool->tree_node_pool.push_back(parent);
-    cout << "Pushed to " << parent.self_index << " " << sizeof(parent) << " size: " << NumericType::pool->tree_node_pool.size() << " vs capacity: " << NumericType::pool->tree_node_pool.capacity() << "\n";
+    if (NumericType::pool->tree_node_pool.capacity() == NumericType::pool->tree_node_pool.size() + 2)
+        NumericType::pool->tree_node_pool.reserve(NumericType::pool->tree_node_pool.size() * 1.1);
     return parent;
 }
 
@@ -102,6 +103,8 @@ NumericType NumericType::operator-(const NumericType &v) const
     parent.right_index = v.self_index;
     parent.operation = Subtract;
     NumericType::pool->tree_node_pool.push_back(parent);
+    if (NumericType::pool->tree_node_pool.capacity() == NumericType::pool->tree_node_pool.size() + 2)
+        NumericType::pool->tree_node_pool.reserve(NumericType::pool->tree_node_pool.size() * 1.1);
     return parent;
 }
 
@@ -117,7 +120,8 @@ NumericType NumericType::operator*(const NumericType &v) const
     parent.right_index = v.self_index;
     parent.operation = Multiply;
     NumericType::pool->tree_node_pool.push_back(parent);
-    cout << "Pushed to " << parent.self_index << " " << sizeof(parent) << " size: " << NumericType::pool->tree_node_pool.size() << " vs capacity: " << NumericType::pool->tree_node_pool.capacity() << "\n";
+    if (NumericType::pool->tree_node_pool.capacity() == NumericType::pool->tree_node_pool.size() + 2)
+        NumericType::pool->tree_node_pool.reserve(NumericType::pool->tree_node_pool.size() * 1.1);
     return parent;
 }
 
@@ -131,6 +135,8 @@ NumericType NumericType::operator/(const NumericType &v) const
     parent.right_index = v.self_index;
     parent.operation = Divide;
     NumericType::pool->tree_node_pool.push_back(parent);
+    if (NumericType::pool->tree_node_pool.capacity() == NumericType::pool->tree_node_pool.size() + 2)
+        NumericType::pool->tree_node_pool.reserve(NumericType::pool->tree_node_pool.size() * 1.1);
     return parent;
 }
 
@@ -147,6 +153,8 @@ NumericType NumericType::sqrt() const
     parent.right_index = 0;
     parent.operation = Sqrt;
     NumericType::pool->tree_node_pool.push_back(parent);
+    if (NumericType::pool->tree_node_pool.capacity() == NumericType::pool->tree_node_pool.size() + 2)
+        NumericType::pool->tree_node_pool.reserve(NumericType::pool->tree_node_pool.size() * 1.1);
     return parent;
 }
 
