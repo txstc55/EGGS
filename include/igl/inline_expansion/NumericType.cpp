@@ -69,10 +69,8 @@ void NumericType::set_pool(NumericPool *p)
 
 void NumericType::accept(NumericVisitor &nv, size_t data_position, const bool top_level)
 {
-    cout<<"Accepting "<<data_position<<"\n";
     map<size_t, size_t> chosen_repeated_node_map;
     (*this).MarkRepeatedNodes(chosen_repeated_node_map, top_level);       // we need to find the repeated node id first
-    cout<<"Mark repeated done\n";
     nv.visit(*this, data_position, true, true, chosen_repeated_node_map); // pass that to the visitor and do whatever they want to do with it
 }
 
