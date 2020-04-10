@@ -269,150 +269,132 @@ sparse_status_t mkl_export_csr(const sparse_matrix_t A,
         mkl_free_buffers();                                                                                                                                                                                             \
     } while (0)
 
-#define PROFILE_MKL_SINGLE_SYPR(MATRIX_VECTOR, R, result_file)                                                                                                              \
-    do                                                                                                                                                                      \
-    {                                                                                                                                                                       \
-        sparse_status_t status;                                                                                                                                             \
-        std::vector<sparse_matrix_t> matrix_vectors, result_vectors;                                                                                                        \
-        struct matrix_descr symmetric_type;                                                                                                                                 \
-        symmetric_type.type = SPARSE_MATRIX_TYPE_SYMMETRIC;                                                                                                                 \
-        symmetric_type.mode = SPARSE_FILL_MODE_UPPER;                                                                                                                       \
-        symmetric_type.diag = SPARSE_DIAG_NON_UNIT;                                                                                                                         \
-        for (unsigned int i = 0; i < MATRIX_VECTOR.size(); i++)                                                                                                             \
-        {                                                                                                                                                                   \
-            sparse_matrix_t tmp;                                                                                                                                            \
-            MKL_INT nnz = MATRIX_VECTOR[i].nonZeros();                                                                                                                      \
-            create_mkl_csr_matrix(MATRIX_VECTOR[i], &tmp);                                                                                                                  \
-            matrix_vectors.push_back(tmp);                                                                                                                                  \
-        }                                                                                                                                                                   \
-        for (int i = 0; i < MATRIX_VECTOR.size() - 1; i++)                                                                                                                  \
-        {                                                                                                                                                                   \
-            sparse_matrix_t tmp;                                                                                                                                            \
-            result_vectors.push_back(tmp);                                                                                                                                  \
-        }                                                                                                                                                                   \
-        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_NNZ_COUNT);             \
-        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
-        mkl_set_num_threads_local(1);                                                                                                                                       \
-        auto elapsed = benchmarkTimer([&]() {                                                                                                                               \
-            for (int j = 0; j < 100; j++)                                                                                                                                   \
-            {                                                                                                                                                               \
-                status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_FINALIZE_MULT); \
-            }                                                                                                                                                               \
-        });                                                                                                                                                                 \
-        std::cout << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                             \
-        result_file << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                           \
-        R = result_vectors[0];                                                                                                                                              \
-        mkl_free_buffers();                                                                                                                                                 \
+#define PROFILE_MKL_SINGLE_SYPR(MATRIX_VECTOR, R, result_file)                                                                                                       \
+    do                                                                                                                                                               \
+    {                                                                                                                                                                \
+        sparse_status_t status;                                                                                                                                      \
+        std::vector<sparse_matrix_t> matrix_vectors, result_vectors;                                                                                                 \
+        struct matrix_descr symmetric_type;                                                                                                                          \
+        symmetric_type.type = SPARSE_MATRIX_TYPE_SYMMETRIC;                                                                                                          \
+        symmetric_type.mode = SPARSE_FILL_MODE_UPPER;                                                                                                                \
+        symmetric_type.diag = SPARSE_DIAG_NON_UNIT;                                                                                                                  \
+        for (unsigned int i = 0; i < MATRIX_VECTOR.size(); i++)                                                                                                      \
+        {                                                                                                                                                            \
+            sparse_matrix_t tmp;                                                                                                                                     \
+            MKL_INT nnz = MATRIX_VECTOR[i].nonZeros();                                                                                                               \
+            create_mkl_csr_matrix(MATRIX_VECTOR[i], &tmp);                                                                                                           \
+            matrix_vectors.push_back(tmp);                                                                                                                           \
+        }                                                                                                                                                            \
+        sparse_matrix_t mkl_result;                                                                                                                                  \
+        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_NNZ_COUNT);             \
+        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
+        mkl_set_num_threads_local(1);                                                                                                                                \
+        auto elapsed = benchmarkTimer([&]() {                                                                                                                        \
+            for (int j = 0; j < 100; j++)                                                                                                                            \
+            {                                                                                                                                                        \
+                status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT); \
+            }                                                                                                                                                        \
+        });                                                                                                                                                          \
+        std::cout << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                      \
+        result_file << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                    \
+        R = mkl_result;                                                                                                                                              \
+        mkl_free_buffers();                                                                                                                                          \
     } while (0)
 
-#define PROFILE_MKL_MULTI_SYPR(MATRIX_VECTOR, R, result_file)                                                                                                               \
-    do                                                                                                                                                                      \
-    {                                                                                                                                                                       \
-        sparse_status_t status;                                                                                                                                             \
-        std::vector<sparse_matrix_t> matrix_vectors, result_vectors;                                                                                                        \
-        struct matrix_descr symmetric_type;                                                                                                                                 \
-        symmetric_type.type = SPARSE_MATRIX_TYPE_SYMMETRIC;                                                                                                                 \
-        symmetric_type.mode = SPARSE_FILL_MODE_UPPER;                                                                                                                       \
-        symmetric_type.diag = SPARSE_DIAG_NON_UNIT;                                                                                                                         \
-        for (unsigned int i = 0; i < MATRIX_VECTOR.size(); i++)                                                                                                             \
-        {                                                                                                                                                                   \
-            sparse_matrix_t tmp;                                                                                                                                            \
-            MKL_INT nnz = MATRIX_VECTOR[i].nonZeros();                                                                                                                      \
-            create_mkl_csr_matrix(MATRIX_VECTOR[i], &tmp);                                                                                                                  \
-            matrix_vectors.push_back(tmp);                                                                                                                                  \
-        }                                                                                                                                                                   \
-        for (int i = 0; i < MATRIX_VECTOR.size() - 1; i++)                                                                                                                  \
-        {                                                                                                                                                                   \
-            sparse_matrix_t tmp;                                                                                                                                            \
-            result_vectors.push_back(tmp);                                                                                                                                  \
-        }                                                                                                                                                                   \
-        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_NNZ_COUNT);             \
-        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
-        mkl_set_num_threads_local(0);                                                                                                                                       \
-        auto elapsed = benchmarkTimer([&]() {                                                                                                                               \
-            for (int j = 0; j < 100; j++)                                                                                                                                   \
-            {                                                                                                                                                               \
-                status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_FINALIZE_MULT); \
-            }                                                                                                                                                               \
-        });                                                                                                                                                                 \
-        std::cout << "MKL_MULTI SYPR: " << elapsed << " us\n";                                                                                                              \
-        result_file << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                           \
-        R = result_vectors[0];                                                                                                                                              \
-        mkl_free_buffers();                                                                                                                                                 \
+#define PROFILE_MKL_MULTI_SYPR(MATRIX_VECTOR, R, result_file)                                                                                                        \
+    do                                                                                                                                                               \
+    {                                                                                                                                                                \
+        sparse_status_t status;                                                                                                                                      \
+        std::vector<sparse_matrix_t> matrix_vectors, result_vectors;                                                                                                 \
+        struct matrix_descr symmetric_type;                                                                                                                          \
+        symmetric_type.type = SPARSE_MATRIX_TYPE_SYMMETRIC;                                                                                                          \
+        symmetric_type.mode = SPARSE_FILL_MODE_UPPER;                                                                                                                \
+        symmetric_type.diag = SPARSE_DIAG_NON_UNIT;                                                                                                                  \
+        for (unsigned int i = 0; i < MATRIX_VECTOR.size(); i++)                                                                                                      \
+        {                                                                                                                                                            \
+            sparse_matrix_t tmp;                                                                                                                                     \
+            MKL_INT nnz = MATRIX_VECTOR[i].nonZeros();                                                                                                               \
+            create_mkl_csr_matrix(MATRIX_VECTOR[i], &tmp);                                                                                                           \
+            matrix_vectors.push_back(tmp);                                                                                                                           \
+        }                                                                                                                                                            \
+        sparse_matrix_t mkl_result;                                                                                                                                  \
+        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_NNZ_COUNT);             \
+        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
+        mkl_set_num_threads_local(0);                                                                                                                                \
+        auto elapsed = benchmarkTimer([&]() {                                                                                                                        \
+            for (int j = 0; j < 100; j++)                                                                                                                            \
+            {                                                                                                                                                        \
+                status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT); \
+            }                                                                                                                                                        \
+        });                                                                                                                                                          \
+        std::cout << "MKL_MULTI SYPR: " << elapsed << " us\n";                                                                                                       \
+        result_file << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                    \
+        R = mkl_result;                                                                                                                                              \
+        mkl_free_buffers();                                                                                                                                          \
     } while (0)
 
-#define PROFILE_MKL_SINGLE_SYRK(MATRIX_VECTOR, R, result_file)                                                                                                              \
-    do                                                                                                                                                                      \
-    {                                                                                                                                                                       \
-        sparse_status_t status;                                                                                                                                             \
-        std::vector<sparse_matrix_t> matrix_vectors, result_vectors;                                                                                                        \
-        struct matrix_descr symmetric_type;                                                                                                                                 \
-        symmetric_type.type = SPARSE_MATRIX_TYPE_DIAGONAL;                                                                                                                  \
-        symmetric_type.diag = SPARSE_DIAG_UNIT;                                                                                                                             \
-        for (unsigned int i = 0; i < MATRIX_VECTOR.size(); i++)                                                                                                             \
-        {                                                                                                                                                                   \
-            sparse_matrix_t tmp;                                                                                                                                            \
-            MKL_INT nnz = MATRIX_VECTOR[i].nonZeros();                                                                                                                      \
-            create_mkl_csr_matrix(MATRIX_VECTOR[i], &tmp);                                                                                                                  \
-            matrix_vectors.push_back(tmp);                                                                                                                                  \
-        }                                                                                                                                                                   \
-        sparse_matrix_t tmp;                                                                                                                                                \
-        matrix_vectors.push_back(tmp);                                                                                                                                      \
-        for (int i = 0; i < 1; i++)                                                                                                                                         \
-        {                                                                                                                                                                   \
-            sparse_matrix_t tmp;                                                                                                                                            \
-            result_vectors.push_back(tmp);                                                                                                                                  \
-        }                                                                                                                                                                   \
-        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_NNZ_COUNT);             \
-        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
-        mkl_set_num_threads_local(1);                                                                                                                                       \
-        auto elapsed = benchmarkTimer([&]() {                                                                                                                               \
-            for (int j = 0; j < 100; j++)                                                                                                                                   \
-            {                                                                                                                                                               \
-                status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_FINALIZE_MULT); \
-            }                                                                                                                                                               \
-        });                                                                                                                                                                 \
-        std::cout << "MKL_SINGLE SYRK: " << elapsed << " us\n";                                                                                                             \
-        result_file << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                           \
-        R = result_vectors[0];                                                                                                                                              \
-        mkl_free_buffers();                                                                                                                                                 \
+#define PROFILE_MKL_SINGLE_SYRK(MATRIX_VECTOR, R, result_file)                                                                                                       \
+    do                                                                                                                                                               \
+    {                                                                                                                                                                \
+        sparse_status_t status;                                                                                                                                      \
+        std::vector<sparse_matrix_t> matrix_vectors, result_vectors;                                                                                                 \
+        struct matrix_descr symmetric_type;                                                                                                                          \
+        symmetric_type.type = SPARSE_MATRIX_TYPE_DIAGONAL;                                                                                                           \
+        symmetric_type.diag = SPARSE_DIAG_UNIT;                                                                                                                      \
+        for (unsigned int i = 0; i < MATRIX_VECTOR.size(); i++)                                                                                                      \
+        {                                                                                                                                                            \
+            sparse_matrix_t tmp;                                                                                                                                     \
+            MKL_INT nnz = MATRIX_VECTOR[i].nonZeros();                                                                                                               \
+            create_mkl_csr_matrix(MATRIX_VECTOR[i], &tmp);                                                                                                           \
+            matrix_vectors.push_back(tmp);                                                                                                                           \
+        }                                                                                                                                                            \
+        sparse_matrix_t tmp;                                                                                                                                         \
+        matrix_vectors.push_back(tmp);                                                                                                                               \
+        sparse_matrix_t mkl_result;                                                                                                                                  \
+        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_NNZ_COUNT);             \
+        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
+        mkl_set_num_threads_local(1);                                                                                                                                \
+        auto elapsed = benchmarkTimer([&]() {                                                                                                                        \
+            for (int j = 0; j < 100; j++)                                                                                                                            \
+            {                                                                                                                                                        \
+                status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT); \
+            }                                                                                                                                                        \
+        });                                                                                                                                                          \
+        std::cout << "MKL_SINGLE SYRK: " << elapsed << " us\n";                                                                                                      \
+        result_file << "MKL_SINGLE SYPR: " << elapsed << " us\n";                                                                                                    \
+        R = mkl_result;                                                                                                                                              \
     } while (0)
 
-#define PROFILE_MKL_MULTI_SYRK(MATRIX_VECTOR, R, result_file)                                                                                                               \
-    do                                                                                                                                                                      \
-    {                                                                                                                                                                       \
-        sparse_status_t status;                                                                                                                                             \
-        std::vector<sparse_matrix_t> matrix_vectors, result_vectors;                                                                                                        \
-        struct matrix_descr symmetric_type;                                                                                                                                 \
-        symmetric_type.type = SPARSE_MATRIX_TYPE_DIAGONAL;                                                                                                                  \
-        symmetric_type.diag = SPARSE_DIAG_UNIT;                                                                                                                             \
-        for (unsigned int i = 0; i < MATRIX_VECTOR.size(); i++)                                                                                                             \
-        {                                                                                                                                                                   \
-            sparse_matrix_t tmp;                                                                                                                                            \
-            MKL_INT nnz = MATRIX_VECTOR[i].nonZeros();                                                                                                                      \
-            create_mkl_csr_matrix(MATRIX_VECTOR[i], &tmp);                                                                                                                  \
-            matrix_vectors.push_back(tmp);                                                                                                                                  \
-        }                                                                                                                                                                   \
-        sparse_matrix_t tmp;                                                                                                                                                \
-        matrix_vectors.push_back(tmp);                                                                                                                                      \
-        for (int i = 0; i < 1; i++)                                                                                                                                         \
-        {                                                                                                                                                                   \
-            sparse_matrix_t tmp;                                                                                                                                            \
-            result_vectors.push_back(tmp);                                                                                                                                  \
-        }                                                                                                                                                                   \
-        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_NNZ_COUNT);             \
-        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
-        mkl_set_num_threads_local(0);                                                                                                                                       \
-        auto elapsed = benchmarkTimer([&]() {                                                                                                                               \
-            for (int j = 0; j < 100; j++)                                                                                                                                   \
-            {                                                                                                                                                               \
-                status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &result_vectors[0], SPARSE_STAGE_FINALIZE_MULT); \
-            }                                                                                                                                                               \
-        });                                                                                                                                                                 \
-        std::cout << "MKL_MULTI SYRK: " << elapsed << " us\n";                                                                                                              \
-        result_file << "MKL_MULTI SYRK: " << elapsed << " us\n";                                                                                                            \
-        R = result_vectors[0];                                                                                                                                              \
-        mkl_free_buffers();                                                                                                                                                 \
+#define PROFILE_MKL_MULTI_SYRK(MATRIX_VECTOR, R, result_file)                                                                                                        \
+    do                                                                                                                                                               \
+    {                                                                                                                                                                \
+        sparse_status_t status;                                                                                                                                      \
+        std::vector<sparse_matrix_t> matrix_vectors, result_vectors;                                                                                                 \
+        struct matrix_descr symmetric_type;                                                                                                                          \
+        symmetric_type.type = SPARSE_MATRIX_TYPE_DIAGONAL;                                                                                                           \
+        symmetric_type.diag = SPARSE_DIAG_UNIT;                                                                                                                      \
+        for (unsigned int i = 0; i < MATRIX_VECTOR.size(); i++)                                                                                                      \
+        {                                                                                                                                                            \
+            sparse_matrix_t tmp;                                                                                                                                     \
+            MKL_INT nnz = MATRIX_VECTOR[i].nonZeros();                                                                                                               \
+            create_mkl_csr_matrix(MATRIX_VECTOR[i], &tmp);                                                                                                           \
+            matrix_vectors.push_back(tmp);                                                                                                                           \
+        }                                                                                                                                                            \
+        sparse_matrix_t tmp;                                                                                                                                         \
+        matrix_vectors.push_back(tmp);                                                                                                                               \
+        sparse_matrix_t mkl_result;                                                                                                                                  \
+        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_NNZ_COUNT);             \
+        status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT_NO_VAL);  \
+        mkl_set_num_threads_local(0);                                                                                                                                \
+        auto elapsed = benchmarkTimer([&]() {                                                                                                                        \
+            for (int j = 0; j < 100; j++)                                                                                                                            \
+            {                                                                                                                                                        \
+                status = mkl_sparse_sypr(SPARSE_OPERATION_TRANSPOSE, matrix_vectors[0], matrix_vectors[1], symmetric_type, &mkl_result, SPARSE_STAGE_FINALIZE_MULT); \
+            }                                                                                                                                                        \
+        });                                                                                                                                                          \
+        std::cout << "MKL_MULTI SYRK: " << elapsed << " us\n";                                                                                                       \
+        result_file << "MKL_MULTI SYRK: " << elapsed << " us\n";                                                                                                     \
+        R = mkl_result;                                                                                                                                              \
     } while (0)
 
 #define PROFILE_MKL_MULTI_SPMV(MATRIX, x, y, result_file)                                              \
