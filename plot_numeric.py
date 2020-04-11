@@ -123,8 +123,9 @@ with open(f, 'r') as j:
 
     # plt.yticks(np.arange(0, max_y, gap))
     ax = plt.axes()
-    ax.set_xscale('log', basex=2)
+    # ax.set_xscale('log', basex=2)
     ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+    ax.xaxis.set_major_locator(ticker.FixedLocator([1,2,4,8,16]))
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
