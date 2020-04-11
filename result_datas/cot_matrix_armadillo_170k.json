@@ -1,1 +1,1 @@
-[{"ASSEMBLE": 0, "SOLVE": 0, "COMPUTE": 33375000.0, "name": "EIGEN"}, {"ASSEMBLE": 0, "SOLVE": 0, "COMPUTE": 15325600.0, "name": "OURS"}]
+[{"ASSEMBLE": 0, "SOLVE": 0, "COMPUTE": 34281700.0, "name": "EIGEN"}, {"ASSEMBLE": 0, "SOLVE": 0, "COMPUTE": 7479950.0, "name": "OURS"}]
