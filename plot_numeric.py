@@ -117,14 +117,15 @@ with open(f, 'r') as j:
         mkl_speedup.append(time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
         ours_speedup.append(time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
 
-    plt.plot(x_range, mkl_speedup, label = "MKL Multi Thread Speedup Over Single Thread", color = "#009688")
-    plt.plot(x_range, ours_speedup, label = "Ours Multi Thread Speedup Over Single Thread", color = "#FFC107")
+    plt.plot(x_range, mkl_speedup, label = "MKL", color = "#009688")
+    plt.plot(x_range, ours_speedup, label = "Ours", color = "#FFC107")
     plt.legend()
 
     # plt.yticks(np.arange(0, max_y, gap))
     ax = plt.axes()
     ax.set_xscale('log', basex=2)
     ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+    ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     plt.savefig("test_result_graphs/spyr_thread_diff.pdf", bbox_inches='tight',
