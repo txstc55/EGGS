@@ -290,6 +290,99 @@ int main(int argc, char *argv[])
         cout << "NUMERIC ERROR: " << (Eigen_result - R_numeric).norm() << "\n";
         break;
     }
+    case 5:
+    {
+        result_file.open("const_abc_result.txt", std::ios_base::app);
+        SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        SparseMatrix<double, RowMajor> m2 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        SparseMatrix<double, RowMajor> m3 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        cout << "Matrix generated for this operation\n";
+        igl::Timer numeric_prep;
+        numeric_prep.start();
+        SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
+        SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
+        SparseMatrix<NumericType, RowMajor> m3_numeric = to_sparse_numeric<double, RowMajor>(m3, 2);
+        SparseMatrix<NumericType, RowMajor> result_numeric = m1_numeric * m2_numeric * m3_numeric;
+        ex = NumericExecutor(result_numeric, 0);
+        NumericType::pool->clear_pool();
+        m1_numeric.resize(0, 0);
+        m2_numeric.resize(0, 0);
+        m3_numeric.resize(0, 0);
+        numeric_prep.stop();
+        cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(m2.valuePtr(), m2.valuePtr() + m2.nonZeros()), vector<double>(m3.valuePtr(), m3.valuePtr() + m3.nonZeros())};
+        vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1, m2, m3};
+        PROFILE_MKL_MULTI_PIPE(MATRIX_VECTOR, R1_mkl_t, result_file);
+        PROFILE_MKL_SINGLE_PIPE(MATRIX_VECTOR, R2_mkl_t, result_file);
+        numeric_result1.resize(result_numeric.nonZeros());
+        numeric_result2.resize(result_numeric.nonZeros());
+        PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
+        PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
+        SparseMatrix<double, RowMajor> Eigen_result;
+        auto elapsed_eigen_single = benchmarkTimer([&]() {
+            for (int i = 0; i < 25; i++)
+            {
+                Eigen_result = m1 * m2 * m3;
+            }
+        });
+        cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
+        result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
+        auto R1_info = extract_value<double>(R1_mkl_t);
+        auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        cout << "MKL ERROR: " << (Eigen_result - R_mkl).norm() << "\n";
+        cout << "NUMERIC ERROR: " << (Eigen_result - R_numeric).norm() << "\n";
+        break;
+    }
+    case 6:
+    {
+        result_file.open("const_2_result.txt", std::ios_base::app);
+        SparseMatrix<double, RowMajor> m1 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        SparseMatrix<double, RowMajor> m2 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        SparseMatrix<double, RowMajor> m3 = generate_sparse_matrix_average<double, RowMajor>(matrix_size, matrix_size, entry_per_row);
+        cout << "Matrix generated for this operation\n";
+        igl::Timer numeric_prep;
+        numeric_prep.start();
+        SparseMatrix<NumericType, RowMajor> m1_numeric = to_sparse_numeric<double, RowMajor>(m1, 0);
+        SparseMatrix<NumericType, RowMajor> m2_numeric = to_sparse_numeric<double, RowMajor>(m2, 1);
+        SparseMatrix<NumericType, RowMajor> m3_numeric = to_sparse_numeric<double, RowMajor>(m3, 2);
+        SparseMatrix<NumericType, RowMajor> m1m2_numeric = m1_numeric + m2_numeric;
+        SparseMatrix<NumericType, RowMajor> result_numeric = (m1m2_numeric) * (m1m2_numeric + m3_numeric);
+        ex = NumericExecutor(result_numeric, 0);
+        NumericType::pool->clear_pool();
+        m1_numeric.resize(0, 0);
+        m2_numeric.resize(0, 0);
+        m3_numeric.resize(0, 0);
+        numeric_prep.stop();
+        cout << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        result_file << "Numeric pre-computation: " << numeric_prep.getElapsedTimeInMicroSec() << " us\n";
+        vector<vector<double>> DATAS = {vector<double>(m1.valuePtr(), m1.valuePtr() + m1.nonZeros()), vector<double>(m2.valuePtr(), m2.valuePtr() + m2.nonZeros()), vector<double>(m3.valuePtr(), m3.valuePtr() + m3.nonZeros())};
+        vector<SparseMatrix<double, RowMajor>> MATRIX_VECTOR = {m1, m2, m3};
+        PROFILE_MKL_CONST_OP2_MULT(MATRIX_VECTOR, R1_mkl_t, result_file);
+        PROFILE_MKL_CONST_OP2_SINGLE(MATRIX_VECTOR, R2_mkl_t, result_file);
+        numeric_result1.resize(result_numeric.nonZeros());
+        numeric_result2.resize(result_numeric.nonZeros());
+        PROFILE_EXECUTOR_MULTI(ex, DATAS, numeric_result1, result_file);
+        PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
+        SparseMatrix<double, RowMajor> m1m2;
+        SparseMatrix<double, RowMajor> Eigen_result;
+        auto elapsed_eigen_single = benchmarkTimer([&]() {
+            for (int i = 0; i < 25; i++)
+            {
+                m1m2 = m1 + m2;
+                Eigen_result = (m1m2) * (m1m2 + m3);
+            }
+        });
+        cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
+        result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
+        auto R1_info = extract_value<double>(R1_mkl_t);
+        auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        cout << "MKL ERROR: " << (Eigen_result - R_mkl).norm() << "\n";
+        cout << "NUMERIC ERROR: " << (Eigen_result - R_numeric).norm() << "\n";
+        break;
+    }
     }
     result_file.close();
 }
