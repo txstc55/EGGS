@@ -161,9 +161,9 @@ int main(int argc, char *argv[])
   for (int i = 0; i < 100; i++)
   {
     key_down(' ', 0); // the following 100 iterations
+    if ((i + 1) % 25 == 0)
+      igl::writeOBJ("cot_smoothed_"+to_string(i+1)+".obj", c.smoothedV, c.F);
   }
-  igl::writeOBJ("cot_smoothed.obj", c.smoothedV, c.F);
-
 
   // cout << "Press [space] to smooth." << endl;
   // return viewer.launch();

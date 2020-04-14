@@ -166,16 +166,16 @@ elif example == 1:
     # do eigen tests
     os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 0" + file + " && cd ..")
-    os.system("mv build/result_cot.txt result_datas/result_cot_eigen.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_eigen.obj")
+    os.system("mv build/result_cot.txt result_datas/result_cot_eigen.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_eigen_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_eigen_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_eigen_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_eigen_100.obj")
 
     # do mkl tests
     os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 2" + file + " && cd ..")
-    os.system("mv build/result_cot.txt result_datas/result_cot_mkl.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_mkl.obj")
+    os.system("mv build/result_cot.txt result_datas/result_cot_mkl.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_mkl_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_mkl_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_mkl_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_mkl_100.obj")
     # do numeric 1 tests
     os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 3" + file + " && cd ..")
-    os.system("mv build/result_cot.txt result_datas/result_cot_numeric1.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_numeric1.obj")
+    os.system("mv build/result_cot.txt result_datas/result_cot_numeric1.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_numeric1_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_numeric1_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_numeric1_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_numeric1_100.obj")
 
     # # do numeric 2 tests
     # os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
