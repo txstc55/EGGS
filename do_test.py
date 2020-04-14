@@ -43,12 +43,14 @@ eigen_data = {}
 eigen_data["name"] = "EIGEN"
 eigen_data["COMPUTE"] = 0
 eigen_data["SOLVE"] = 0
+eigen_data["SOLVE_VARIANCE"] = 0
 eigen_data["ASSEMBLE"] = 0
 
 mkl_data = {}
 mkl_data["name"] = "MKL"
 mkl_data["COMPUTE"] = 0
 mkl_data["SOLVE"] = 0
+mkl_data["SOLVE_VARIANCE"] = 0
 mkl_data["ASSEMBLE"] = 0
 
 
@@ -56,12 +58,14 @@ numeric1_data = {}
 numeric1_data["name"] = "OURS"
 numeric1_data["COMPUTE"] = 0
 numeric1_data["SOLVE"] = 0
+numeric1_data["SOLVE_VARIANCE"] = 0
 numeric1_data["ASSEMBLE"] = 0
 
 numeric2_data = {}
 numeric2_data["name"] = "NUMERIC2"
 numeric2_data["COMPUTE"] = 0
 numeric2_data["SOLVE"] = 0
+numeric2_data["SOLVE_VARIANCE"] = 0
 numeric2_data["ASSEMBLE"] = 0
 
 if example == 0:
@@ -87,6 +91,7 @@ if example == 0:
     #           demo_type + file + " && cd ..")
     # os.system("mv build/result.txt result_datas/result_numeric2.txt && mv build/slim.obj result_datas/slim_numeric2.obj")
 
+    solve_time = []
     f = open("result_datas/result_eigen.txt")
     count = 0
     for line in f:
@@ -98,9 +103,12 @@ if example == 0:
                 eigen_data["COMPUTE"] += float(line.split(": ")[1])
             else:
                 eigen_data["SOLVE"] += float(line.split(": ")[1])
+                solve_time.append(float(line.split(": ")[1]))
             count += 1
+    mean = sum(solve_time) / len(solve_time) 
+    eigen_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
 
-
+    solve_time = []
     f = open("result_datas/result_mkl.txt")
     count = 0
     for line in f:
@@ -112,8 +120,12 @@ if example == 0:
                 mkl_data["COMPUTE"] += float(line.split(": ")[1])
             else:
                 mkl_data["SOLVE"] += float(line.split(": ")[1])
+                solve_time.append(float(line.split(": ")[1]))
             count += 1
+    mean = sum(solve_time) / len(solve_time) 
+    mkl_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
 
+    solve_time = []
     f = open("result_datas/result_numeric1.txt")
     count = 0
     for line in f:
@@ -125,7 +137,10 @@ if example == 0:
                 numeric1_data["COMPUTE"] += float(line.split(": ")[1])
             else:
                 numeric1_data["SOLVE"] += float(line.split(": ")[1])
+                solve_time.append(float(line.split(": ")[1]))
             count += 1
+    mean = sum(solve_time) / len(solve_time) 
+    numeric1_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     # f = open("result_datas/result_numeric2.txt")
     # count = 0
@@ -167,6 +182,7 @@ elif example == 1:
     #           weight+" -m 4" + file + " && cd ..")
     # os.system("mv build/result_cot.txt result_datas/result_cot_numeric2.txt && mv build/cot_smoothed.obj result_datas/cot_smoothed_numeric2.obj")
 
+    solve_time = []
     f = open("result_datas/result_cot_eigen.txt")
     count = 0
     for line in f:
@@ -178,8 +194,12 @@ elif example == 1:
                 eigen_data["COMPUTE"] += float(line.split(": ")[1])
             else:
                 eigen_data["SOLVE"] += float(line.split(": ")[1])
+                solve_time.append(float(line.split(": ")[1]))
             count += 1
+    mean = sum(solve_time) / len(solve_time) 
+    eigen_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
 
+    solve_time = []
     f = open("result_datas/result_cot_mkl.txt")
     count = 0
     for line in f:
@@ -191,8 +211,12 @@ elif example == 1:
                 mkl_data["COMPUTE"] += float(line.split(": ")[1])
             else:
                 mkl_data["SOLVE"] += float(line.split(": ")[1])
+                solve_time.append(float(line.split(": ")[1]))
             count += 1
+    mean = sum(solve_time) / len(solve_time) 
+    mkl_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
 
+    solve_time = []
     f = open("result_datas/result_cot_numeric1.txt")
     count = 0
     for line in f:
@@ -204,7 +228,10 @@ elif example == 1:
                 numeric1_data["COMPUTE"] += float(line.split(": ")[1])
             else:
                 numeric1_data["SOLVE"] += float(line.split(": ")[1])
+                solve_time.append(float(line.split(": ")[1]))
             count += 1
+    mean = sum(solve_time) / len(solve_time) 
+    numeric1_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
 
     # f = open("result_datas/result_cot_numeric2.txt")
     # count = 0
@@ -237,6 +264,7 @@ elif example == 2:
     os.system("cd build && taskset -c 0-7 ./tutorial/801_OpticalFlow_bin -m 4" + demo_type+" && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
+    solve_time = []
     f = open("result_datas/result_opt_eigen.txt")
     count = 0
     for line in f:
@@ -248,7 +276,10 @@ elif example == 2:
                 eigen_data["COMPUTE"] += float(line.split(": ")[1])
             else:
                 eigen_data["SOLVE"] += float(line.split(": ")[1])
+                solve_time.append(float(line.split(": ")[1]))
             count += 1
+    mean = sum(solve_time) / len(solve_time) 
+    eigen_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
 
     # f = open("result_datas/result_opt_numeric1.txt")
     # count = 0
@@ -263,6 +294,7 @@ elif example == 2:
     #             numeric1_data["SOLVE"] += float(line.split(": ")[1])
     #         count += 1
 
+    solve_time = []
     f = open("result_datas/result_opt_numeric1.txt")
     count = 0
     for line in f:
@@ -274,7 +306,10 @@ elif example == 2:
                 numeric1_data["COMPUTE"] += float(line.split(": ")[1])
             else:
                 numeric1_data["SOLVE"] += float(line.split(": ")[1])
+                solve_time.append(float(line.split(": ")[1]))
             count += 1
+    mean = sum(solve_time) / len(solve_time) 
+    numeric1_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
 
     if output == "":
         with open('result_datas/all_result_opt.json', 'w') as j:
