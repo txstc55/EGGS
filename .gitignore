@@ -6,4 +6,4 @@ external/
 .vscode/
 build/
 result_datas/*.txt
-result_datas/*.obj
+# result_datas/*.obj
