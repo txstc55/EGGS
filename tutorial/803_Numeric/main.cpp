@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
-        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result1.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result - R_numeric).norm() << "\n";
         break;
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
-        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result1.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
         break;
@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
-        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result1.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result.triangularView<Upper>() - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result.triangularView<Upper>() - R_numeric).norm() << "\n";
         break;
@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
-        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result1.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result - R_numeric).norm() << "\n";
         break;
@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
-        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result1.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result - R_numeric).norm() << "\n";
         break;
@@ -378,7 +378,7 @@ int main(int argc, char *argv[])
         result_file << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
         auto R1_info = extract_value<double>(R1_mkl_t);
         auto R_mkl = ConstructSparseMatrix(get<0>(R1_info), get<1>(R1_info), get<2>(R1_info), (get<5>(R1_info)).data(), (get<3>(R1_info)).data(), (get<4>(R1_info)).data());
-        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result2.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
+        auto R_numeric = ConstructSparseMatrix(result_numeric.rows(), result_numeric.cols(), result_numeric.nonZeros(), numeric_result1.data(), result_numeric.outerIndexPtr(), result_numeric.innerIndexPtr());
         cout << "MKL ERROR: " << (Eigen_result - R_mkl).norm() << "\n";
         cout << "NUMERIC ERROR: " << (Eigen_result - R_numeric).norm() << "\n";
         break;
