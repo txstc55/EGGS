@@ -143,6 +143,16 @@ void param_2d_demo_iter()
     if (mesh_name == "")
     {
       igl::read_triangle_mesh(TUTORIAL_SHARED_PATH "/face.obj", V, F);
+      Eigen::VectorXd mins = V.colwise().minCoeff();
+      for (int i = 0; i < V.rows(); i++)
+      {
+        V(i, 0) -= mins(0);
+        V(i, 1) -= mins(1);
+        V(i, 2) -= mins(2);
+      }
+      Eigen::VectorXd maxs = V.colwise().maxCoeff();
+      double max_coeff = max(max(maxs(0), maxs(1)), maxs(2));
+      V /= max_coeff;
     }
     else
     {
@@ -171,7 +181,20 @@ void param_2d_demo_iter()
     slim_precompute(V, F, uv_init, sData, igl::MappingEnergyType::SYMMETRIC_DIRICHLET, b, bc, 0);
 
     uv_scale_param = 15 * (1. / sqrt(sData.mesh_area));
+    Eigen::MatrixXd cn;
+    Eigen::MatrixXi fn;
+    Eigen::MatrixXd texture = sData.V_o * uv_scale_param;
+    Eigen::VectorXd mins = texture.colwise().minCoeff();
+    for (int i = 0; i < texture.rows(); i++)
+    {
+      texture(i, 0) -= mins(0);
+      texture(i, 1) -= mins(1);
+    }
+    Eigen::VectorXd maxs = texture.colwise().maxCoeff();
+    double max_coeff = max(maxs(0), maxs(1));
+    texture /= max_coeff;
 
+    igl::writeOBJ("slim_init_param.obj", V, F, cn, fn, texture, F);
     first_iter = false;
   }
   else
@@ -334,7 +357,25 @@ int main(int argc, char *argv[])
   {
     key_down(' ', 0);
   }
-  igl::writeOBJ("slim.obj", sData.V_o, sData.F);
+
+  if (d != 1)
+    igl::writeOBJ("slim.obj", sData.V_o, sData.F);
+  else
+  {
+    Eigen::MatrixXd cn;
+    Eigen::MatrixXi fn;
+    Eigen::MatrixXd texture = sData.V_o * uv_scale_param;
+    Eigen::VectorXd mins = texture.colwise().minCoeff();
+    for (int i = 0; i < texture.rows(); i++)
+    {
+      texture(i, 0) -= mins(0);
+      texture(i, 1) -= mins(1);
+    }
+    Eigen::VectorXd maxs = texture.colwise().maxCoeff();
+    double max_coeff = max(maxs(0), maxs(1));
+    texture /= max_coeff;
+    igl::writeOBJ("slim.obj", V, F, cn, fn, texture, F);
+  }
 
   return 0;
 }
