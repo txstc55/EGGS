@@ -47,10 +47,10 @@ for k in range(len(file_list_full)):
 
         plt.legend()
 
-        if "_15" in f:
-            plt.yticks(list(range(0, 45, 5)))
-        else:
-            plt.yticks(list(range(0, 19, 2)))
+        # if "_15" in f:
+        #     plt.yticks(list(range(0, 45, 5)))
+        # else:
+        plt.yticks(list(range(0, 19, 2)))
         # plt.subplots_adjust(top=1, bottom=0, right=1, left=0,
         #                     hspace=0, wspace=0)
         ax = plt.axes()
