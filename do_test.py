@@ -28,10 +28,12 @@ demo_type = " -d " + str(demo_type)
 if not os.path.isdir("build"):
     print("Creating build folder now")
     os.system("mkdir build")
-    os.system("cd build && taskset -c 0-7 cmake .. -DCMAKE_BUILD_TYPE=Release && make -j && cd ..")
+    os.system(
+        "cd build && taskset -c 0-7 cmake .. -DCMAKE_BUILD_TYPE=Release && make -j && cd ..")
 else:
     print("Build exists, rebuilding")
-    os.system("cd build && taskset -c 0-7 cmake .. -DCMAKE_BUILD_TYPE=Release && make -j && cd ..")
+    os.system(
+        "cd build && taskset -c 0-7 cmake .. -DCMAKE_BUILD_TYPE=Release && make -j && cd ..")
 
 # check if result data folder exists
 if not os.path.isdir("result_datas"):
@@ -105,8 +107,9 @@ if example == 0:
                 eigen_data["SOLVE"] += float(line.split(": ")[1])
                 solve_time.append(float(line.split(": ")[1]))
             count += 1
-    mean = sum(solve_time) / len(solve_time) 
-    eigen_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
+    mean = sum(solve_time) / len(solve_time)
+    eigen_data["SOLVE_VARIANCE"] = sum(
+        (i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     solve_time = []
     f = open("result_datas/result_mkl.txt")
@@ -122,8 +125,9 @@ if example == 0:
                 mkl_data["SOLVE"] += float(line.split(": ")[1])
                 solve_time.append(float(line.split(": ")[1]))
             count += 1
-    mean = sum(solve_time) / len(solve_time) 
-    mkl_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
+    mean = sum(solve_time) / len(solve_time)
+    mkl_data["SOLVE_VARIANCE"] = sum(
+        (i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     solve_time = []
     f = open("result_datas/result_numeric1.txt")
@@ -139,8 +143,9 @@ if example == 0:
                 numeric1_data["SOLVE"] += float(line.split(": ")[1])
                 solve_time.append(float(line.split(": ")[1]))
             count += 1
-    mean = sum(solve_time) / len(solve_time) 
-    numeric1_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time)
+    mean = sum(solve_time) / len(solve_time)
+    numeric1_data["SOLVE_VARIANCE"] = sum(
+        (i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     # f = open("result_datas/result_numeric2.txt")
     # count = 0
@@ -166,16 +171,19 @@ elif example == 1:
     # do eigen tests
     os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 0" + file + " && cd ..")
-    os.system("mv build/result_cot.txt result_datas/result_cot_eigen.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_eigen_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_eigen_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_eigen_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_eigen_100.obj")
+    os.system("mv build/result_cot.txt result_datas/result_cot_eigen.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_eigen_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_" +
+              output+"_eigen_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_"+output+"_eigen_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_"+output+"_eigen_100.obj")
 
     # do mkl tests
     os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 2" + file + " && cd ..")
-    os.system("mv build/result_cot.txt result_datas/result_cot_mkl.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_mkl_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_mkl_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_mkl_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_mkl_100.obj")
+    os.system("mv build/result_cot.txt result_datas/result_cot_mkl.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_"+output+"_mkl_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_" +
+              output+"_mkl_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_"+output+"_mkl_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_"+output+"_mkl_100.obj")
     # do numeric 1 tests
     os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 3" + file + " && cd ..")
-    os.system("mv build/result_cot.txt result_datas/result_cot_numeric1.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_numeric1_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_numeric1_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_numeric1_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_numeric1_100.obj")
+    os.system("mv build/result_cot.txt result_datas/result_cot_numeric1.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_"+output+"_numeric1_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_" +
+              output+"_numeric1_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_"+output+"_numeric1_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_"+output+"_numeric1_100.obj")
 
     # # do numeric 2 tests
     # os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
@@ -196,8 +204,9 @@ elif example == 1:
                 eigen_data["SOLVE"] += float(line.split(": ")[1])
                 solve_time.append(float(line.split(": ")[1]))
             count += 1
-    mean = sum(solve_time) / len(solve_time) 
-    eigen_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
+    mean = sum(solve_time) / len(solve_time)
+    eigen_data["SOLVE_VARIANCE"] = sum(
+        (i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     solve_time = []
     f = open("result_datas/result_cot_mkl.txt")
@@ -213,8 +222,9 @@ elif example == 1:
                 mkl_data["SOLVE"] += float(line.split(": ")[1])
                 solve_time.append(float(line.split(": ")[1]))
             count += 1
-    mean = sum(solve_time) / len(solve_time) 
-    mkl_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
+    mean = sum(solve_time) / len(solve_time)
+    mkl_data["SOLVE_VARIANCE"] = sum(
+        (i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     solve_time = []
     f = open("result_datas/result_cot_numeric1.txt")
@@ -230,8 +240,9 @@ elif example == 1:
                 numeric1_data["SOLVE"] += float(line.split(": ")[1])
                 solve_time.append(float(line.split(": ")[1]))
             count += 1
-    mean = sum(solve_time) / len(solve_time) 
-    numeric1_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
+    mean = sum(solve_time) / len(solve_time)
+    numeric1_data["SOLVE_VARIANCE"] = sum(
+        (i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     # f = open("result_datas/result_cot_numeric2.txt")
     # count = 0
@@ -255,13 +266,15 @@ elif example == 1:
 
 elif example == 2:
     # do eigen tests
-    os.system("cd build && taskset -c 0-7 ./tutorial/801_OpticalFlow_bin -m 0" + demo_type+" && cd ..")
+    os.system("cd build && taskset -c 0-7 ./tutorial/801_OpticalFlow_bin -m 0" +
+              demo_type+" && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_eigen.txt")
     # # do numeric multi tests
     # os.system("cd build && taskset -c 0-7 ./tutorial/801_OpticalFlow_bin -m 3" + " && cd ..")
     # os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
-    os.system("cd build && taskset -c 0-7 ./tutorial/801_OpticalFlow_bin -m 4" + demo_type+" && cd ..")
+    os.system("cd build && taskset -c 0-7 ./tutorial/801_OpticalFlow_bin -m 4" +
+              demo_type+" && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
 
     solve_time = []
@@ -278,8 +291,9 @@ elif example == 2:
                 eigen_data["SOLVE"] += float(line.split(": ")[1])
                 solve_time.append(float(line.split(": ")[1]))
             count += 1
-    mean = sum(solve_time) / len(solve_time) 
-    eigen_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
+    mean = sum(solve_time) / len(solve_time)
+    eigen_data["SOLVE_VARIANCE"] = sum(
+        (i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     # f = open("result_datas/result_opt_numeric1.txt")
     # count = 0
@@ -308,8 +322,9 @@ elif example == 2:
                 numeric1_data["SOLVE"] += float(line.split(": ")[1])
                 solve_time.append(float(line.split(": ")[1]))
             count += 1
-    mean = sum(solve_time) / len(solve_time) 
-    numeric1_data["SOLVE_VARIANCE"] = sum((i - mean) ** 2 for i in solve_time) / len(solve_time) 
+    mean = sum(solve_time) / len(solve_time)
+    numeric1_data["SOLVE_VARIANCE"] = sum(
+        (i - mean) ** 2 for i in solve_time) / len(solve_time)
 
     if output == "":
         with open('result_datas/all_result_opt.json', 'w') as j:
@@ -319,7 +334,8 @@ elif example == 2:
             json.dump([eigen_data, numeric1_data], j)
 
 elif example == 3:
-    os.system("cd build && taskset -c 0-7 ./tutorial/802_CotMatrix_bin"+file+" && cd ..")
+    os.system(
+        "cd build && taskset -c 0-7 ./tutorial/802_CotMatrix_bin"+file+" && cd ..")
     os.system("mv build/result_cot_matrix.txt result_datas/result_cot_matrix.txt")
 
     f = open("result_datas/result_cot_matrix.txt")
