@@ -120,6 +120,7 @@ with open(f, 'r') as j:
     plt.plot(x_range, mkl_speedup, label = "MKL", color = "#009688")
     plt.plot(x_range, ours_speedup, label = "Ours", color = "#FFC107")
     plt.legend()
+    plt.yticks(list(range(0, 17, 2)))
 
     # plt.yticks(np.arange(0, max_y, gap))
     ax = plt.axes()
