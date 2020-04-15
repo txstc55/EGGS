@@ -65,7 +65,7 @@ write_json("result_datas/pipe_result.txt", "result_datas/pipe.json")
 write_json("result_datas/sypr_result.txt", "result_datas/sypr.json")
 write_json("result_datas/syrk_result.txt", "result_datas/syrk.json")
 
-# do the test with 15 entries per row
+## do the test with 15 entries per row
 os.system("cd build && rm *_result.txt && cd ..")
 for i in matrix_sizes:
     for j in range(3):
@@ -88,25 +88,25 @@ write_json("result_datas/sypr_result.txt", "result_datas/sypr_thread_diff.json")
 
 
 ## to composite operations
-# os.system("cd build && rm *_result.txt && cd ..")
-# for i in [100, 1000, 10000, 100000]:
-#     for j in [4, 5, 6]:
-#         os.system("cd build && taskset -c 0-7 ./tutorial/803_Numeric_bin -d " +
-#             str(j) + " -r "+str(i) + " -e 5" + " && cd ..")
-# os.system("mv build/*_result.txt result_datas/")
+os.system("cd build && rm *_result.txt && cd ..")
+for i in [1000, 10000, 100000]:
+    for j in [4, 5, 6]:
+        os.system("cd build && taskset -c 0-7 ./tutorial/803_Numeric_bin -d " +
+            str(j) + " -r "+str(i) + " -e 5" + " && cd ..")
+os.system("mv build/*_result.txt result_datas/")
 
-# write_json("result_datas/const_result.txt", "result_datas/const.json")
-# write_json("result_datas/const_2_result.txt", "result_datas/const_2.json")
-# write_json("result_datas/const_abc_result.txt", "result_datas/const_abc.json")
+write_json("result_datas/const_result.txt", "result_datas/const.json")
+write_json("result_datas/const_2_result.txt", "result_datas/const_2.json")
+write_json("result_datas/const_abc_result.txt", "result_datas/const_abc.json")
         
 
-# os.system("cd build && rm *_result.txt && cd ..")
-# for i in [100, 1000, 10000, 100000]:
-#     for j in [4, 5, 6]:
-#         os.system("cd build && taskset -c 0-7 ./tutorial/803_Numeric_bin -d " +
-#             str(j) + " -r "+str(i) + " -e 15" + " && cd ..")
-# os.system("mv build/*_result.txt result_datas/")
+os.system("cd build && rm *_result.txt && cd ..")
+for i in [1000, 10000, 100000]:
+    for j in [4, 5, 6]:
+        os.system("cd build && taskset -c 0-7 ./tutorial/803_Numeric_bin -d " +
+            str(j) + " -r "+str(i) + " -e 15" + " && cd ..")
+os.system("mv build/*_result.txt result_datas/")
 
-# write_json("result_datas/const_result.txt", "result_datas/const_15.json")
-# write_json("result_datas/const_2_result.txt", "result_datas/const_2_15.json")
-# write_json("result_datas/const_abc.txt", "result_datas/const_abc_15.json")
+write_json("result_datas/const_result.txt", "result_datas/const_15.json")
+write_json("result_datas/const_2_result.txt", "result_datas/const_2_15.json")
+write_json("result_datas/const_abc_result.txt", "result_datas/const_abc_15.json")

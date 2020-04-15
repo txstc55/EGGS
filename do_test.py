@@ -171,7 +171,7 @@ elif example == 1:
     # do eigen tests
     os.system("cd build && taskset -c 0-7 ./tutorial/205_Laplacian_bin -w " +
               weight+" -m 0" + file + " && cd ..")
-    os.system("mv build/result_cot.txt result_datas/result_cot_eigen.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_eigen_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_" +
+    os.system("mv build/result_cot.txt result_datas/result_cot_eigen.txt && mv build/cot_smoothed_25.obj result_datas/cot_smoothed_"+output+"_eigen_25.obj && mv build/cot_smoothed_50.obj result_datas/cot_smoothed_" +
               output+"_eigen_50.obj && mv build/cot_smoothed_75.obj result_datas/cot_smoothed_"+output+"_eigen_75.obj && mv build/cot_smoothed_100.obj result_datas/cot_smoothed_"+output+"_eigen_100.obj")
 
     # do mkl tests
