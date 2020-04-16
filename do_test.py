@@ -276,6 +276,8 @@ elif example == 2:
     os.system("cd build && taskset -c 0-7 ./tutorial/801_OpticalFlow_bin -m 4" +
               demo_type+" && cd ..")
     os.system("mv build/result_opt.txt result_datas/result_opt_numeric1.txt")
+    os.system("mv build/u.txt result_datas/"+output+"_u.txt")
+    os.system("mv build/v.txt result_datas/"+output+"_v.txt")
 
     solve_time = []
     f = open("result_datas/result_opt_eigen.txt")
