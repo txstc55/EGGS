@@ -2,6 +2,7 @@ import sys
 import imageio
 from matplotlib.pyplot import figure, draw, pause, gca
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def compareGraphs(u, v, im2, output):
@@ -50,6 +51,8 @@ for line in f:
     t = line.split()
     t = [float(x) for x in t]
     v_tmp.append(t)
+u_tmp = np.array(u_tmp)
+v_tmp = np.array(v_tmp)
 
 im1 = imageio.imread(sys.argv[3], as_gray=True)
 im2 = imageio.imread(sys.argv[4], as_gray=True)
