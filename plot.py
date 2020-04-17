@@ -5,6 +5,9 @@ import sys
 from math import ceil, log
 
 json_file_name = "result_datas/all_result.json"
+plt.rc('ytick', labelsize=28)    # fontsize of the tick labels
+plt.rc('xtick', labelsize=21)    # fontsize of the tick labels
+plt.rc('legend', fontsize=14)    # fontsize of the tick labels
 
 results = []
 if len(sys.argv) == 2:
