@@ -12,6 +12,12 @@ file_list_full = ["result_datas/"+x+".json" for x in file_list]
 
 x_range = [2, 3, 4, 5, 6]
 x_range = [10**x for x in x_range]
+
+plt.rc('ytick', labelsize=28)    # fontsize of the tick labels
+plt.rc('xtick', labelsize=21)    # fontsize of the tick labels
+plt.rc('legend', fontsize=14)    # fontsize of the tick labels
+
+
 for k in range(len(file_list_full)):
     f = file_list_full[k]
     with open(f, 'r') as j:
@@ -50,7 +56,7 @@ for k in range(len(file_list_full)):
         # if "_15" in f:
         #     plt.yticks(list(range(0, 45, 5)))
         # else:
-        plt.yticks(list(range(0, 19, 2)))
+        plt.yticks(list(range(0, 19, 4)))
         # plt.subplots_adjust(top=1, bottom=0, right=1, left=0,
         #                     hspace=0, wspace=0)
         ax = plt.axes()
@@ -100,6 +106,41 @@ for k in range(len(file_list_full)):
 
 # plot the scalability
 f = "result_datas/sypr_thread_diff.json"
+with open(f, 'r') as j:
+    results = json.load(j)
+    print(results)
+    time_result = {}
+    x_range = [1, 2, 4, 8, 16]
+    for r in results:
+        time = r['time']
+        time = [float(x) for x in time]
+        if (not "EIGEN SINGLE THREAD" in r['method_name']):
+            time_result[r['method_name']] = time
+
+    mkl_speedup = []
+    ours_speedup = []
+    for i in range(5):
+        mkl_speedup.append(time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
+        ours_speedup.append(time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
+
+    plt.plot(x_range, mkl_speedup, label = "MKL", color = "#009688")
+    plt.plot(x_range, ours_speedup, label = "Ours", color = "#FFC107")
+    plt.legend()
+    plt.yticks(list(range(0, 17, 2)))
+
+    # plt.yticks(np.arange(0, max_y, gap))
+    ax = plt.axes()
+    # ax.set_xscale('log', basex=2)
+    ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+    ax.xaxis.set_major_locator(ticker.FixedLocator([1,2,4,8,16]))
+    ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.savefig("test_result_graphs/spyr_thread_diff.pdf", bbox_inches='tight',
+                pad_inches=0, dpi=200)
+    plt.close()
+
+f = "result_datas/sypr_5_thread_diff.json"
 with open(f, 'r') as j:
     results = json.load(j)
     print(results)
