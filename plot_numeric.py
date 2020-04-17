@@ -171,7 +171,7 @@ with open(f, 'r') as j:
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    plt.savefig("test_result_graphs/spyr_thread_diff.pdf", bbox_inches='tight',
+    plt.savefig("test_result_graphs/spyr_5_thread_diff.pdf", bbox_inches='tight',
                 pad_inches=0, dpi=200)
     plt.close()
 
