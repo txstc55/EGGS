@@ -65,7 +65,7 @@ The numeric tests are a set of tests for profiling our performance of some opera
 A bash script is provided for doing all of the tests, another bash script is provided to produce all the graphs. To reproduce the result in the paper, please do:
 
 ```bash
-./all_test.sh
+./all_tests.sh
 ./all_plot.sh
 ```
 
