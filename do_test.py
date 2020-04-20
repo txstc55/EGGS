@@ -356,7 +356,7 @@ elif example == 3:
 
     if output == "":
         with open("result_datas/all_result_cot_matrix.json", 'w') as j:
-            json.dump([eigen_data, numeric1_data], j)
+            json.dump([eigen_data, numeric1_data, numeric2_data], j)
     else:
         with open("result_datas/"+output+".json", 'w')as j:
-            json.dump([eigen_data, numeric1_data], j)
+            json.dump([eigen_data, numeric1_data, numeric2_data], j)
