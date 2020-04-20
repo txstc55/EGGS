@@ -95,6 +95,7 @@ for k in range(len(file_list_full)):
         ax = plt.axes()
         ax.set_xscale('log')
         ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+        ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2e'))
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         save_plot_name = "test_result_graphs/" + \
@@ -271,6 +272,7 @@ for k in range(len(file_list_full)):
         ax = plt.axes()
         ax.set_xscale('log')
         ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+        ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.0e'))
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         save_plot_name = "test_result_graphs/" + \
