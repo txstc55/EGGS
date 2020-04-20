@@ -57,19 +57,19 @@ if (max(solve) != 0):
         h1 = r1.get_height()
         h2 = r2.get_height()
         h3 = r3.get_height()
-        plt.text(r1.get_x() + r1.get_width() / 2., h1 / 2., "%.2E" % h1,
-                 ha="center", va="center", color="white", fontsize=11, fontweight="bold")
-        plt.text(r2.get_x() + r2.get_width() / 2., h1 + h2 / 2., "%.2E" % h2,
-                 ha="center", va="center", color="white", fontsize=11, fontweight="bold")
-        plt.text(r3.get_x() + r3.get_width() / 2., h1 + h2 + h3 / 2., "%.2E" %
-                 h3, ha="center", va="center", color="white", fontsize=11, fontweight="bold")
-        plt.legend((p1[0], p2[0], p3[0]), ('Solve', 'Compute', 'Assemble'))
+        #plt.text(r1.get_x() + r1.get_width() / 2., h1 / 2., "%.2E" % h1,
+        #         ha="center", va="center", color="white", fontsize=11, fontweight="bold")
+        #plt.text(r2.get_x() + r2.get_width() / 2., h1 + h2 / 2., "%.2E" % h2,
+        #         ha="center", va="center", color="white", fontsize=11, fontweight="bold")
+        #plt.text(r3.get_x() + r3.get_width() / 2., h1 + h2 + h3 / 2., "%.2E" %
+        #         h3, ha="center", va="center", color="white", fontsize=11, fontweight="bold")
+        plt.legend((p1[0], p2[0], p3[0]), ('Solve', 'Compute', 'Assemble'), fontsize=22)
 else:
     for r2 in p2:
         h2 = r2.get_height()
-        plt.text(r2.get_x() + r2.get_width() / 2.,  h2 / 2., "%.2E" % h2,
-                 ha="center", va="center", color="white", fontsize=11, fontweight="bold")
-        plt.legend((p2[0],), ('Compute',))
+        #plt.text(r2.get_x() + r2.get_width() / 2.,  h2 / 2., "%.2E" % h2,
+        #         ha="center", va="center", color="white", fontsize=11, fontweight="bold")
+        plt.legend((p2[0],), ('Compute',), fontsize=22)
 
 
 save_plot_name = json_file_name.split(".")[0].split("/")[-1]
