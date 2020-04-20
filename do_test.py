@@ -347,11 +347,12 @@ elif example == 3:
             eigen_data["COMPUTE"] = float(line.split(":")[1])
         elif count == 1:
             numeric1_data["COMPUTE"] = float(line.split(":")[1])
-        # elif count == 2:
-        #     numeric2_data["COMPUTE"] = float(line.split(":")[1])
+        elif count == 2:
+            numeric2_data["COMPUTE"] = float(line.split(":")[1])
         else:
             print(line)
         count += 1
+    numeric2_data["name"] = "OURS WITH\n HAND OPTIMIZATION"
 
     if output == "":
         with open("result_datas/all_result_cot_matrix.json", 'w') as j:
