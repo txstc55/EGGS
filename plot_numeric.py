@@ -32,7 +32,7 @@ for k in range(len(file_list_full)):
             if (r['method_name'] == "OURS MULTI THREAD"):
                 pre_comp_time = r["pre_comp"]
 
-        pre_comp_time = [float(x) for x in pre_comp_time]
+        pre_comp_time = [float(x)/1000 for x in pre_comp_time]
 
         multi_thread_factor = []
         single_thread_factor = []
@@ -91,7 +91,7 @@ for k in range(len(file_list_full)):
 
         plt.plot(x_range, pre_comp_time,
                  linewidth=3, label="Pre Computation Time", color="#b8e994")
-        #plt.legend(fontsize=16)
+        # plt.legend(fontsize=16)
         ax = plt.axes()
         ax.set_xscale('log')
         ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
@@ -121,11 +121,13 @@ with open(f, 'r') as j:
     mkl_speedup = []
     ours_speedup = []
     for i in range(5):
-        mkl_speedup.append(time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
-        ours_speedup.append(time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
+        mkl_speedup.append(
+            time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
+        ours_speedup.append(
+            time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
 
-    plt.plot(x_range, mkl_speedup, label = "MKL", color = "#009688", linewidth=2)
-    plt.plot(x_range, ours_speedup, label = "Ours", color = "#FFC107", linewidth=2)
+    plt.plot(x_range, mkl_speedup, label="MKL", color="#009688", linewidth=2)
+    plt.plot(x_range, ours_speedup, label="Ours", color="#FFC107", linewidth=2)
     plt.legend(fontsize=20)
     plt.yticks(list(range(0, 17, 2)), fontsize=20)
 
@@ -133,8 +135,9 @@ with open(f, 'r') as j:
     ax = plt.axes()
     # ax.set_xscale('log', basex=2)
     ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
-    ax.xaxis.set_major_locator(ticker.FixedLocator([1,2,4,8,16]))
-    ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
+    ax.xaxis.set_major_locator(ticker.FixedLocator([1, 2, 4, 8, 16]))
+    ax.xaxis.set_major_formatter(
+        ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     plt.savefig("test_result_graphs/spyr_thread_diff.pdf", bbox_inches='tight',
@@ -156,11 +159,13 @@ with open(f, 'r') as j:
     mkl_speedup = []
     ours_speedup = []
     for i in range(5):
-        mkl_speedup.append(time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
-        ours_speedup.append(time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
+        mkl_speedup.append(
+            time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
+        ours_speedup.append(
+            time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
 
-    plt.plot(x_range, mkl_speedup, label = "MKL", color = "#009688", linewidth=2)
-    plt.plot(x_range, ours_speedup, label = "Ours", color = "#FFC107", linewidth=2)
+    plt.plot(x_range, mkl_speedup, label="MKL", color="#009688", linewidth=2)
+    plt.plot(x_range, ours_speedup, label="Ours", color="#FFC107", linewidth=2)
     plt.legend(fontsize=20)
     plt.yticks(list(range(0, 17, 2)), fontsize=20)
 
@@ -168,8 +173,9 @@ with open(f, 'r') as j:
     ax = plt.axes()
     # ax.set_xscale('log', basex=2)
     ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
-    ax.xaxis.set_major_locator(ticker.FixedLocator([1,2,4,8,16]))
-    ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
+    ax.xaxis.set_major_locator(ticker.FixedLocator([1, 2, 4, 8, 16]))
+    ax.xaxis.set_major_formatter(
+        ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     plt.savefig("test_result_graphs/spyr_5_thread_diff.pdf", bbox_inches='tight',
@@ -198,7 +204,7 @@ for k in range(len(file_list_full)):
             if (r['method_name'] == "OURS MULTI THREAD"):
                 pre_comp_time = r["pre_comp"]
 
-        pre_comp_time = [float(x) for x in pre_comp_time]
+        pre_comp_time = [float(x)/1000 for x in pre_comp_time]
 
         multi_thread_factor = []
         single_thread_factor = []
@@ -241,11 +247,12 @@ for k in range(len(file_list_full)):
         # plot the eigen difference
         plt.plot(x_range, eigen_single_thread_factor,
                  linewidth=3, label="Single Thread Speedup Over Eigen", color="#d63031")
-        #plt.legend()
+        # plt.legend()
         import math
         localMax = math.ceil(max(eigen_single_thread_factor))
         localMin = math.floor(min(eigen_single_thread_factor))
-        plt.yticks(range(localMin, localMax+1, math.ceil((localMax + 1 - localMin)/5)))
+        plt.yticks(range(localMin, localMax+1,
+                         math.ceil((localMax + 1 - localMin)/5)))
         ax = plt.axes()
         ax.set_xscale('log')
         ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
@@ -260,7 +267,7 @@ for k in range(len(file_list_full)):
 
         plt.plot(x_range, pre_comp_time,
                  linewidth=3, label="Pre Computation Time", color="#b8e994")
-        #plt.legend()
+        # plt.legend()
         ax = plt.axes()
         ax.set_xscale('log')
         ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
