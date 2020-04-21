@@ -69,7 +69,7 @@ else:
         h2 = r2.get_height()
         #plt.text(r2.get_x() + r2.get_width() / 2.,  h2 / 2., "%.2E" % h2,
         #         ha="center", va="center", color="white", fontsize=11, fontweight="bold")
-        plt.legend((p2[0],), ('Compute',), fontsize=22)
+        # plt.legend((p2[0],), ('Compute',), fontsize=22)
 
 
 save_plot_name = json_file_name.split(".")[0].split("/")[-1]

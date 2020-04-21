@@ -75,11 +75,13 @@ for k in range(len(file_list_full)):
         # plot the eigen difference
         plt.plot(x_range, eigen_single_thread_factor,
                  linewidth=3, label="Single Thread Speedup Over Eigen", color="#d63031")
+        plt.yticks(list(range(0, 80, 10)))
         ax = plt.axes()
         if len(ax.lines) > 1:
             plt.legend()
         ax.set_xscale('log')
         ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+        ax.yaxis.set_major_locator(ticker.FixedLocator(list(range(0, 80, 10))))
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         save_plot_name = "test_result_graphs/" + \
@@ -248,6 +250,7 @@ for k in range(len(file_list_full)):
         # plot the eigen difference
         plt.plot(x_range, eigen_single_thread_factor,
                  linewidth=3, label="Single Thread Speedup Over Eigen", color="#d63031")
+        plt.yticks(list(range(0, 30, 5)))
         # plt.legend()
         import math
         localMax = math.ceil(max(eigen_single_thread_factor))
@@ -257,6 +260,7 @@ for k in range(len(file_list_full)):
         ax = plt.axes()
         ax.set_xscale('log')
         ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+        ax.yaxis.set_major_locator(ticker.FixedLocator(list(range(0, 30, 5))))
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         save_plot_name = "test_result_graphs/" + \
