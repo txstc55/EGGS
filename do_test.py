@@ -352,7 +352,7 @@ elif example == 3:
         else:
             print(line)
         count += 1
-    numeric2_data["name"] = "OURS WITH\n HAND OPTIMIZATION"
+    numeric2_data["name"] = "OURS WITH\nHAND OPTIMIZATION"
 
     if output == "":
         with open("result_datas/all_result_cot_matrix.json", 'w') as j:
