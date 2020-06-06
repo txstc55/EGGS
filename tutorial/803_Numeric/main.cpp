@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
         // extract the result
         SparseMatrix<double, RowMajor> Eigen_result;
         auto elapsed_eigen_single = benchmarkTimer([&]() {
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Eigen_result = m1 * m2;
             }
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
         PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
         SparseMatrix<double, RowMajor> Eigen_result;
         auto elapsed_eigen_single = benchmarkTimer([&]() {
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Eigen_result = m1.transpose() * m2 * m1;
             }
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
         PROFILE_EXECUTOR_SINGLE(ex, DATAS, numeric_result2, result_file);
         SparseMatrix<double, RowMajor> Eigen_result;
         auto elapsed_eigen_single = benchmarkTimer([&]() {
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Eigen_result = m1.transpose() * m1;
             }
