@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
         auto elapsed_eigen_single = benchmarkTimer([&]() {
             for (int i = 0; i < 25; i++)
             {
-                Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m2 * m1;
+                Eigen_result = m1.transpose() * m2 * m1;
             }
         });
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
         auto elapsed_eigen_single = benchmarkTimer([&]() {
             for (int i = 0; i < 25; i++)
             {
-                Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m1;
+                Eigen_result = m1.transpose() * m1;
             }
         });
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
         auto elapsed_eigen_single = benchmarkTimer([&]() {
             for (int i = 0; i < 25; i++)
             {
-                Eigen_result = SparseMatrix<double, RowMajor>(m1.transpose()) * m1;
+                Eigen_result = m1.transpose() * m1;
             }
         });
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
         auto elapsed_eigen_single = benchmarkTimer([&]() {
             for (int i = 0; i < 25; i++)
             {
-                Eigen_result = SparseMatrix<double, RowMajor>((3.78 * m1 + m2).transpose()) * (6.942 * SparseMatrix<double, RowMajor>(m2.transpose()) + m3);
+                Eigen_result = (3.78 * m1 + m2).transpose() * (6.942 * SparseMatrix<double, RowMajor>(m2.transpose()) + m3);
             }
         });
         cout << "EIGEN SINGLE THREAD: " << elapsed_eigen_single << " us\n";
