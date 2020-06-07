@@ -95,6 +95,42 @@ for i in ["0", "0-1", "0-3", "0-7", "0-15"]:
 os.system("mv build/*_result.txt result_datas/")
 write_json("result_datas/sypr_result.txt", "result_datas/sypr_5_thread_diff.json")
 
+os.system("cd build && rm *_result.txt && cd ..")
+for i in ["0", "0-1", "0-3", "0-7", "0-15"]:
+    print("Matrix size 1000000 pipe taskset "+i)
+    os.system("cd build && taskset -c "+i +
+              " ./tutorial/803_Numeric_bin -d 0 -r 1000000 -e 15 && cd ..")
+os.system("mv build/*_result.txt result_datas/")
+write_json("result_datas/pipe_result.txt", "result_datas/pipe_thread_diff.json")
+
+
+os.system("cd build && rm *_result.txt && cd ..")
+for i in ["0", "0-1", "0-3", "0-7", "0-15"]:
+    print("Matrix size 1000000 pipe taskset "+i)
+    os.system("cd build && taskset -c "+i +
+              " ./tutorial/803_Numeric_bin -d 0 -r 1000000 -e 5 && cd ..")
+os.system("mv build/*_result.txt result_datas/")
+write_json("result_datas/pipe_result.txt", "result_datas/pipe_5_thread_diff.json")
+
+
+os.system("cd build && rm *_result.txt && cd ..")
+for i in ["0", "0-1", "0-3", "0-7", "0-15"]:
+    print("Matrix size 1000000 syrk taskset "+i)
+    os.system("cd build && taskset -c "+i +
+              " ./tutorial/803_Numeric_bin -d 2 -r 1000000 -e 15 && cd ..")
+os.system("mv build/*_result.txt result_datas/")
+write_json("result_datas/syrk_result.txt", "result_datas/syrk_thread_diff.json")
+
+
+os.system("cd build && rm *_result.txt && cd ..")
+for i in ["0", "0-1", "0-3", "0-7", "0-15"]:
+    print("Matrix size 1000000 syrk taskset "+i)
+    os.system("cd build && taskset -c "+i +
+              " ./tutorial/803_Numeric_bin -d 2 -r 1000000 -e 5 && cd ..")
+os.system("mv build/*_result.txt result_datas/")
+write_json("result_datas/syrk_result.txt", "result_datas/syrk_5_thread_diff.json")
+
+
 
 ## to composite operations
 os.system("cd build && rm *_result.txt && cd ..")
