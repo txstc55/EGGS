@@ -186,6 +186,160 @@ with open(f, 'r') as j:
     plt.close()
 
 
+
+f = "result_datas/pipe_thread_diff.json"
+with open(f, 'r') as j:
+    results = json.load(j)
+    print(results)
+    time_result = {}
+    x_range = [1, 2, 4, 8, 16]
+    for r in results:
+        time = r['time']
+        time = [float(x) for x in time]
+        if (not "EIGEN SINGLE THREAD" in r['method_name']):
+            time_result[r['method_name']] = time
+
+    mkl_speedup = []
+    ours_speedup = []
+    for i in range(5):
+        mkl_speedup.append(
+            time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
+        ours_speedup.append(
+            time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
+
+    plt.plot(x_range, mkl_speedup, label="MKL", color="#009688", linewidth=2)
+    plt.plot(x_range, ours_speedup, label="Ours", color="#FFC107", linewidth=2)
+    plt.legend(fontsize=20)
+    plt.yticks(list(range(0, 17, 2)), fontsize=20)
+
+    # plt.yticks(np.arange(0, max_y, gap))
+    ax = plt.axes()
+    # ax.set_xscale('log', basex=2)
+    ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+    ax.xaxis.set_major_locator(ticker.FixedLocator([1, 2, 4, 8, 16]))
+    ax.xaxis.set_major_formatter(
+        ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.savefig("test_result_graphs/pipe_thread_diff.pdf", bbox_inches='tight',
+                pad_inches=0, dpi=200)
+    plt.close()
+
+f = "result_datas/pipe_5_thread_diff.json"
+with open(f, 'r') as j:
+    results = json.load(j)
+    print(results)
+    time_result = {}
+    x_range = [1, 2, 4, 8, 16]
+    for r in results:
+        time = r['time']
+        time = [float(x) for x in time]
+        if (not "EIGEN SINGLE THREAD" in r['method_name']):
+            time_result[r['method_name']] = time
+
+    mkl_speedup = []
+    ours_speedup = []
+    for i in range(5):
+        mkl_speedup.append(
+            time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
+        ours_speedup.append(
+            time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
+
+    plt.plot(x_range, mkl_speedup, label="MKL", color="#009688", linewidth=2)
+    plt.plot(x_range, ours_speedup, label="Ours", color="#FFC107", linewidth=2)
+    plt.legend(fontsize=20)
+    plt.yticks(list(range(0, 17, 2)), fontsize=20)
+
+    # plt.yticks(np.arange(0, max_y, gap))
+    ax = plt.axes()
+    # ax.set_xscale('log', basex=2)
+    ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+    ax.xaxis.set_major_locator(ticker.FixedLocator([1, 2, 4, 8, 16]))
+    ax.xaxis.set_major_formatter(
+        ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.savefig("test_result_graphs/pipe_5_thread_diff.pdf", bbox_inches='tight',
+                pad_inches=0, dpi=200)
+    plt.close()
+
+
+f = "result_datas/syrk_thread_diff.json"
+with open(f, 'r') as j:
+    results = json.load(j)
+    print(results)
+    time_result = {}
+    x_range = [1, 2, 4, 8, 16]
+    for r in results:
+        time = r['time']
+        time = [float(x) for x in time]
+        if (not "EIGEN SINGLE THREAD" in r['method_name']):
+            time_result[r['method_name']] = time
+
+    mkl_speedup = []
+    ours_speedup = []
+    for i in range(5):
+        mkl_speedup.append(
+            time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
+        ours_speedup.append(
+            time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
+
+    plt.plot(x_range, mkl_speedup, label="MKL", color="#009688", linewidth=2)
+    plt.plot(x_range, ours_speedup, label="Ours", color="#FFC107", linewidth=2)
+    plt.legend(fontsize=20)
+    plt.yticks(list(range(0, 17, 2)), fontsize=20)
+
+    # plt.yticks(np.arange(0, max_y, gap))
+    ax = plt.axes()
+    # ax.set_xscale('log', basex=2)
+    ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+    ax.xaxis.set_major_locator(ticker.FixedLocator([1, 2, 4, 8, 16]))
+    ax.xaxis.set_major_formatter(
+        ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.savefig("test_result_graphs/syrk_thread_diff.pdf", bbox_inches='tight',
+                pad_inches=0, dpi=200)
+    plt.close()
+
+f = "result_datas/syrk_5_thread_diff.json"
+with open(f, 'r') as j:
+    results = json.load(j)
+    print(results)
+    time_result = {}
+    x_range = [1, 2, 4, 8, 16]
+    for r in results:
+        time = r['time']
+        time = [float(x) for x in time]
+        if (not "EIGEN SINGLE THREAD" in r['method_name']):
+            time_result[r['method_name']] = time
+
+    mkl_speedup = []
+    ours_speedup = []
+    for i in range(5):
+        mkl_speedup.append(
+            time_result["MKL SINGLE THREAD"][i]/time_result["MKL MULTI THREAD"][i])
+        ours_speedup.append(
+            time_result["OURS SINGLE THREAD"][i]/time_result["OURS MULTI THREAD"][i])
+
+    plt.plot(x_range, mkl_speedup, label="MKL", color="#009688", linewidth=2)
+    plt.plot(x_range, ours_speedup, label="Ours", color="#FFC107", linewidth=2)
+    plt.legend(fontsize=20)
+    plt.yticks(list(range(0, 17, 2)), fontsize=20)
+
+    # plt.yticks(np.arange(0, max_y, gap))
+    ax = plt.axes()
+    # ax.set_xscale('log', basex=2)
+    ax.xaxis.set_minor_locator(ticker.FixedLocator([]))
+    ax.xaxis.set_major_locator(ticker.FixedLocator([1, 2, 4, 8, 16]))
+    ax.xaxis.set_major_formatter(
+        ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.savefig("test_result_graphs/syrk_5_thread_diff.pdf", bbox_inches='tight',
+                pad_inches=0, dpi=200)
+    plt.close()
+
 file_list = ["const", "const_2", "const_abc"]
 file_list_15 = [x+"_15" for x in file_list]
 file_list += file_list_15
