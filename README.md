@@ -135,4 +135,4 @@ DATAS[1].assign(B.valuePtr(), B.valuePtr() + B.nonZeros()); // assign the values
 ex.ExecuteMulti(DATAS, RESULTS);                            // execute the multi threaded version
 ```
 
-After the execution, the numeric values will be in the RESULTS vector. You can pre-store the structure information of Result_Numeric (the outer index and inner index) to reassemble an Eigen Sparse Matrix. An implementation is done at [test_utils.hpp](https://github.com/txstc55/EGGS/blob/master/tutorial/803_Numeric/test_utils.hpp) callsed ConstructSparseMatrix.
+After the execution, the numeric values will be in the RESULTS vector. You can pre-store the structure information of Result_Numeric (the outer index and inner index) to reassemble an Eigen Sparse Matrix. An implementation is done at [test_utils.hpp](https://github.com/txstc55/EGGS/blob/master/tutorial/803_Numeric/test_utils.hpp) called ConstructSparseMatrix.
