@@ -9,6 +9,12 @@ This project uses inline-expansion, which generates code for a given structure o
 
 We use [Intel MKL](https://software.intel.com/en-us/mkl) not only for comparison for some of the examples, but also use the pardiso solver implemented in MKL for solving a sparse linear equation. Hence, downloading and installing is necessary. 
 
+Installing MKL on linux system can be painful, here is a good link to how to install it on debian [a good tutorial](https://github.com/eddelbuettel/mkl4deb). You can check which version of MKL to install once you added the key by:
+
+```bash
+apt-cache search intel-mkl-64bit
+```
+
 After you installed MKL, please set systemv ariable <em>MKLROOT</em> to where you installed MKL, normally the line of code works:
 
 ```bash
