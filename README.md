@@ -5,6 +5,8 @@ This project uses EGGS, which generates code for a given structure of (sparse) m
 1. Once the structure and how to produce the result is set, the structure of the final matrix remain the same, only the values will differ based on input.
 2. The number of operations is finite, it will not be a random operation on each entry, but some pattern is formed.
 
+Paper link: https://cims.nyu.edu/gcl/papers/2020-EGGS.pdf
+
 ## Requirement
 
 We use [Intel MKL](https://software.intel.com/en-us/mkl) not only for comparison for some of the examples, but also use the pardiso solver implemented in MKL for solving a sparse linear equation. Hence, downloading and installing is necessary. 
