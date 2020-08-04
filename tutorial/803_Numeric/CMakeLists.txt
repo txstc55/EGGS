@@ -8,7 +8,3 @@ set(test_sources
 
 add_executable(${PROJECT_NAME}_bin ${test_sources})
 target_link_libraries(${PROJECT_NAME}_bin igl::core tutorials)
-# find_package(OpenMP)
-# if(OpenMP_CXX_FOUND)
-#     target_link_libraries(${PROJECT_NAME}_bin OpenMP::OpenMP_CXX)
-# endif()

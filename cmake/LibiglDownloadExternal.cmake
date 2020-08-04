@@ -199,6 +199,7 @@ endfunction()
 ## inja
 function(igl_download_inja)
     igl_download_project(inja
-        GIT_REPOSITORY https://github.com/pantor/inja.git
+		GIT_REPOSITORY https://github.com/pantor/inja.git
+		GIT_TAG 	   cc5cc2875f076b78ecc198c6117b86c2a5527346
     )
 endfunction()
