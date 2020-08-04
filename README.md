@@ -1,9 +1,11 @@
-# Libigl-Inline-Expansion
+# EGGS
 
-This project uses inline-expansion, which generates code for a given structure of (sparse) matrix and operation, for some of the functions implemented in [libigl](https://libigl.github.io/). The examples we pick normally fufil the following requirement:
+This project uses EGGS, which generates code for a given structure of (sparse) matrix and operation, for some of the functions implemented in [libigl](https://libigl.github.io/). The examples we pick normally fufil the following requirement:
 
 1. Once the structure and how to produce the result is set, the structure of the final matrix remain the same, only the values will differ based on input.
 2. The number of operations is finite, it will not be a random operation on each entry, but some pattern is formed.
+
+Paper link: https://cims.nyu.edu/gcl/papers/2020-EGGS.pdf
 
 ## Requirement
 
